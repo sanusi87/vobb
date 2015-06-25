@@ -1,0 +1,227 @@
+extends layout
+
+block stylesheet
+	link(rel="stylesheet" href="/report/plugins/select2-3.4.8/select2.css?ver=1.0")
+	link(rel="stylesheet" href="/css/style.css?ver=1.0").
+
+block content
+	.main-hdr
+		.time-rocket
+			.rocket-fire
+				.img-flame
+			.img-rocket
+			.rocket-bubble-hdr
+				.rocket-bubble
+					span.quality-title
+						| quality test
+					span.progress-num
+						| 100%
+
+		.main-bg-hdr.sky-normal
+			.bg-panel-hdr
+				.end-sky
+				.sky-divide-6
+				.sky-part-5
+				.sky-divide-5
+				.sky-part-4
+				.sky-divide-4
+				.sky-part-3
+				.sky-divide-3
+				.sky-part-2
+				.sky-divide-2
+
+		.sky-rpt-sect
+			.inner-sky
+
+		.main-bg-hdr.sky-land-cover
+			.bg-panel-hdr
+				.sky-part-1
+
+		.bar-sect
+			.bar-hdr
+				.lvl-txt-hdr
+					.lvl-stat
+						| Pass!
+					.lvl-desc
+						| Firewall level 1
+				.bar-frame
+				.bar-progress
+
+		.content-sect.landing-sect
+			.ground
+			.building.side-left
+			.building.side-right
+			.ctnt-hdr.ctnt-form
+				.title
+					| TIME Voice over Broadband Business&trade; (VoBB) Quality Test
+				.inner-ctnt-hdr
+					.select-tab-hdr
+						.select-tab
+							| Basic Settings
+						.select-tab
+							| Advanced Settings
+						.spacer0
+					.spacer0
+
+					.form-hdr
+						.form-panel
+							.field-title
+								| No of Lines:
+							.theSelector
+								select#total-lines.customDropdown(name="total-lines")
+									for item in [1,2,3,4,5,6,7,8,9,10,15,20,25,30]
+										if ( item == 1 )
+											option(value="1" selected="selected") 1
+										else
+											option(value="#{item}") #{item}
+							.icon-hdr
+								.icon-info
+								.tooltip
+									| No. of lines to be simulated
+							.spacer0
+
+						.form-panel.advance
+							.field-title
+								| Preferred Codec:
+							.theSelector 
+								select#codec-type.customDropdown(name="codec-type")
+									for item, i in codec
+										option(value="#{item.id}") #{item.name} (#{item.speed} Kbps)
+							.icon-hdr
+								.icon-info
+								.tooltip.codec Codec used defines the payload to conduct a voice call
+							.spacer0
+
+						.form-panel.advance
+							.field-title rtp port range:
+							.theSelector
+								input#rtp-start-val.textfield.float-left(type="text")
+								.dashed -
+								input#rtp-end-val.textfield.float-right(type="text" readonly="readonly")
+								.spacer0
+								.field-indi-txt.float-left from
+								.field-indi-txt.float-right to
+								.spacer0
+								.error-txt
+									| Port number should be between 10000 and 20000.
+
+							.icon-hdr
+								.icon-info
+								.tooltip.rtp 
+									| The RTP port may vary. Configure a range which includes the default RTP port in your software/hardware.
+							.spacer0
+
+					input#begin-button.but-mode.magenta.but-w170(name="" type="button" value="Begin Test" onClick="beginTest()")
+					
+					div#applet-container
+						script(type="text/javascript", src="/js/deployJava.js")
+						script(type="text/javascript").
+							var attributes = {
+								code:"PortScanner.class",
+								codebase: "/",
+								archive:"PortScanner20150613.jar?ver=1.0",
+								width:170,
+								height:40,
+								id:"Scanner",
+								name:"Scanner",
+								mayscript: "mayscript",
+								scriptable:"true"
+							};
+							var parameters = {};
+							parameters.minimum_sip = 5060;
+							parameters.maximum_sip = 5061;
+							parameters.minimum_rtp = typeof currRTPStart == 'undefined' ? 10000 : currRTPStart;
+							parameters.host = 'vobbtest.time.com.my';
+							var version = '1.7';
+							deployJava.runApplet(attributes, parameters, version);
+
+					.note-txt
+						| Note: This test might take approximately 2-3 minutes
+
+		.content-sect.result-sect
+			.ctnt-hdr.success
+				.title 
+					| The quality of your broadband connection
+					br
+					| and projected line quality is
+				.result-txt good
+				.quality-sect-hdr
+					.tab-result.VeryPoor
+						.desc Very Poor
+					.tab-result.Poor
+						.desc Poor
+					.tab-result.Acceptable
+						.desc Acceptable
+					.tab-result.Good
+						.desc Good
+					.tab-result.Excellent
+						.desc Excellent
+					.spacer0
+					.line
+
+				.desc (Clear voice/sound with minor imperfections similar to a mobile phone call quality)
+
+				.inner-ctnt-hdr.mos-hdr
+					.mos-txt
+						| Mean Opinion Score (MOS) 
+						span.mos-val 4.26
+					.icon-hdr
+						.icon-info.grey
+						.tooltip.mos Mean Opinion Score (MOS) indicates the perceived voice quality of a voice call/conversation
+					.spacer0
+
+				.spacer0
+				input.but-mode.greyBlack.but-w170(name="" type="button" onClick="restartTest()" value="Restart test")
+				a#subscribe-button.but-mode.greyBlack.but-w170(target="_blank" href="https://apps.time.com.my/crm/VOBB/leads.php") Subscribe now
+
+			.ctnt-hdr.error.fail-result
+				.result-txt error
+				.title 
+					| We are unable to measure your broadband connection
+					br
+					| and line quality.
+				.list-hdr
+					.list-panel
+						.num-txt 1
+						.list-txt 
+							| Please download the latest browser version and try again; or
+						.spacer0
+					.list-panel
+						.num-txt 2
+						.list-txt 
+							| Please ensure your browser is JavaScript enabled and try again; or
+						.spacer0
+					.list-panel
+						.num-txt 3
+						.list-txt
+							| Please check your firewall settings as it may stop the test from running
+						.spacer0
+
+				.spacer0
+				.inner-ctnt-hdr.mos-hdr
+					.mos-txt
+						| Mean Opinion Score (MOS) 
+						span.mos-val N/A
+					.icon-hdr
+						.icon-info.grey
+						.tooltip.mos Mean Opinion Score (MOS) indicates the perceived voice quality of a voice call/conversation
+					.spacer0
+
+				.spacer0
+				input.but-mode.greyBlack.but-w170(type="button" name="" onClick="restartTest()" value="Restart test")
+
+			.ctnt-hdr.error.fail-unknown
+				.result-txt error
+				.title 
+					| Opps! We have exceeded the number of concurrent connections.
+					br
+					| Please try again later.
+
+				.spacer0
+				input.but-mode.greyBlack.but-w170(type="button" name="" onClick="restartTest()" value="Restart test")
+
+
+block javascript
+	script(type="text/javascript" src="/report/plugins/select2-3.4.8/select2.js").
+	script(type="text/javascript" src="/js/function.js?ver=2.5").
+	script(type="text/javascript" src="/js/custom.js?ver=1.3").
