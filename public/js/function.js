@@ -586,9 +586,6 @@ function countPcnt(){
 		//-----pass percentage value from backend----//
 	}
 
-	console.log('counting...');
-	console.log(pcntCount);
-
 	if(currTestStat == "firewall"){
 		var thePcnt = Math.floor(pcntCount/10);
 
@@ -596,7 +593,6 @@ function countPcnt(){
 		$(".bar-sect .bar-hdr .bar-progress").addClass("pcnt"+thePcnt+"0");
 	};
 
-	//console.log( pcntCount );
 	if(pcntCount >= 100){
 		jQuery(document).find('title').text( titleText );
 		pcntCount = 100;
@@ -629,19 +625,14 @@ function hideRocketBubble(){
 };
 
 function setBubbleCount(){
-
 	var pcntStr = pcntCount + "%";
-
 	rocketBubble.find(".progress-num").html(pcntStr);
-
 };
 
 //-------quality test---------------------//
 
 function runQualityTest(){
-
 	currTestStat = "quality";
-
 	theFormCtnt.fadeOut(500);
 
 	theLand.animate({
@@ -657,12 +648,9 @@ function runQualityTest(){
 	}, 800, "easeOutQuint", function(){
 
 		rocketOriY = rocketTakeOffPosi;
-
 		rocketMove();
-
 		showRocketBubble()
 	})
-
 };
 
 //---------------rocket flying off-------------------------------//
@@ -706,7 +694,6 @@ function moveBgSky(){
 			if(bgTop >= -(skyMidPartOffset.top + 20) && currTestStat != "done"){
 
 				stopMoveBgSky();
-
 				startRptSky();
 
 				upperBG.stop(true, true);
@@ -739,15 +726,10 @@ function moveBgSky(){
 var rptSkyTop;
 
 function startRptSky(){
-
 	rptSky.show();
-
 	rptSky.css("top", -(rptSkyH));
-
 	rptSkyTop = rptSky.position().top;
-
 	rptSkyCount = setInterval(moveRptSky, 50);
-
 };
 
 function stopRptSky(){
@@ -756,13 +738,10 @@ function stopRptSky(){
 };
 
 function moveRptSky(){
-
 	rptSkyTop = rptSkyTop + 50;
-
 	if(rptSkyTop >= 0){
 		rptSkyTop = -510;
 	};
-
 	rptSky.css("top",rptSkyTop)
 };
 
@@ -818,7 +797,6 @@ function goDelayBarMoveOut(){
 //--------------------
 
 function moveFirewallBarIn(){
-
 	barSect.animate({
 		top: barTopPosi
 		}, 300, "easeOutQuint",function(){
@@ -826,11 +804,9 @@ function moveFirewallBarIn(){
 
 			startFirewallTest();
 	});
-
 };
 
 function moveFirewallBarOut(){
-
 	barSect.animate({
 		top: barOutPosi
 		}, 300, "easeInSine",function(){
@@ -838,7 +814,6 @@ function moveFirewallBarOut(){
 
 			nextFirewallTest()
 	});
-
 };
 
 function startFirewallTest(){
@@ -847,14 +822,11 @@ function startFirewallTest(){
 };
 
 function nextFirewallTest(){
-
 	resetFirewallTest();
 
 	// this line finished firewall test and returned the END RESULT screen
 	if( currFirewall == 2 || fulltest == false ){
 		currTestStat = "done";
-
-		setEndResult();
 
 		startMoveBgSky();
 
@@ -882,23 +854,16 @@ function nextFirewallTest(){
 };
 
 function removeFirewallBarClass(){
-
 	var theBar = $(".bar-sect .bar-hdr .bar-progress");
-
 	for (i = 1; i <= 10; i++){
-
 		theBar.removeClass("pcnt"+i+"0");
-
 	};
-
 };
 
 //---------show fail end scene----------//
 
 function showFailEndScene(){
-
 	theRocket.fadeOut(300);
-
 	upperBG.animate({
 		top: 0
 		}, 500, "easeOutQuint", function() {
@@ -909,23 +874,6 @@ function showFailEndScene(){
 		top: 510
 		}, 500, "easeOutQuint"
 	);
-
-};
-
-//---------showEndResult----------------//
-
-function setEndResult(){
-
-	if(appView == "offline"){
-
-		endResultStat = "success";
-		successMOSVal = 1;
-
-	}else{
-
-		//----------return the following result as above--------------//
-	};
-
 };
 
 function showEndResult(){
@@ -964,9 +912,18 @@ function showEndResult(){
 
 		$(".ctnt-hdr.success .result-txt").html(tempResultClass);
 		$(".ctnt-hdr.success .mos-val").html(successMOSVal);
-		//console.log( successResultClass );
-		//console.log( successMOSVal );
 		$(".ctnt-hdr.success").children('.desc').html( '('+resultSet[successResultClass].desc+')' );
+
+		if( !fulltest ){
+			// --- populate tooltip content
+			$.appendResultTooltip( $('.tab-result.selected'), {
+				sipResult: 'Unable to test.',
+				rtpResult: 'Unable to test.',
+				rtpStart: currRTPStart,
+				rtpEnd: currRTPEnd,
+			});
+			// ---
+		}
 
 	}else if(endResultStat == "fail-result"){
 		successResultClass = "N/A";
@@ -975,20 +932,14 @@ function showEndResult(){
 	};
 
 	theResultSect.fadeIn(500);
-
 	theRocket.fadeOut(500);
-
 	theRocket.animate({
 		top: -(rocketH)
 		}, 500, "easeOutQuint",function(){
-
 			stopMoveFlame();
 			theFlame.hide();
-
 			theRocket.stop(true, true);
-
 			theRocket.hide();
-
 			rocketStopMove();
 		}
 	);
@@ -1281,9 +1232,6 @@ function hideTooltip(){
 
 // counting currently active user, update this event listener
 socket.on('userLimit', function(data){
-	//console.log('userLimit');
-	//console.log(data);
-
 	// if more than 10 people connected, disable the testing button
 	if( 10 <= data.currentlyActiveUser ){
 		endResultStat = "fail-unknown";
@@ -1296,9 +1244,6 @@ socket.on('userLimit', function(data){
 
 // if a user opens multiple tab/window
 socket.on('block',function(data){
-	//console.log('block');
-	//console.log(data);
-
 	endResultStat = "fail-unknown";
 	jQuery('.ctnt-hdr.error.fail-unknown').children('.title').html( failSet[data.reason] );
 	beginTest();
@@ -1320,8 +1265,6 @@ socket.on('transition_one', function(data){
 
 // handle summary of test result for signal test
 socket.on('callback', function(data){
-	//console.log('callback');
-	//console.log(data);
 	if( data.data.MOS == 'N/A' ){
 		endResultStat = "fail-result";
 		successFirewall = false;
@@ -1644,22 +1587,17 @@ socket.on("udp_packet_sent", function(resp){
 	//}
 
 	if(resp.port == currRTPEnd ){
-		// ---
+		// --------------
 		console.log('start...');
 		var sipPortTestResult = '',
 		rtpPortTestResult = '';
+
 		if( typeof(siptest1) != 'undefined' && typeof(siptest2) != 'undefined' && siptest1 && siptest2 ){
 			sipPortTestResult = 'Ports are opened.';
 		}else{
-			if( fulltest ){
-				sipPortTestResult = 'Ports closed/used by other application.';
-			}else{
-				sipPortTestResult = 'Unable to test.';
-			}
+			sipPortTestResult = 'Ports closed/used by other application.';
 		}
-		console.log(rtptest);
-		console.log(typeof( rtptest ));
-		console.log(rtptest.length);
+
 		if( typeof( rtptest ) != 'undefined' ){
 			var allPortsOpened = true;
 			console.log('looping result....');
@@ -1681,25 +1619,17 @@ socket.on("udp_packet_sent", function(resp){
 				rtpPortTestResult = 'Ports closed/used by other application.';
 			}
 		}else{
-			if( fulltest ){
-				rtpPortTestResult = 'Ports closed/used by other application.';
-			}else{
-				rtpPortTestResult = 'Unable to test.';
-			}
+			rtpPortTestResult = 'Ports closed/used by other application.';
 		}
 
-		// populate tooltip content
-		var tooltipContent = '<div id="test-result-exp" class="icon-hdr-status"><div class="tooltip status"><div><strong>SIP Port 5060-5061:</strong></div>\
-		<div>'+sipPortTestResult+'</div>\
-		<div><strong>RTP Port '+currRTPStart+'-'+currRTPEnd+':</strong></div>\
-		<div>'+rtpPortTestResult+'</div></div></div>';
-
-		if( $('#test-result-exp').length == 1 ){
-			$('#test-result-exp').remove();
-		}
-
-		$('.tab-result.selected').append(tooltipContent);
-		// ---
+		// --- populate tooltip content
+		$.appendResultTooltip( $('.tab-result.selected'), {
+			sipResult: sipPortTestResult,
+			rtpResult: rtpPortTestResult,
+			rtpStart: currRTPStart,
+			rtpEnd: currRTPEnd,
+		});
+		// --------------
 	}
 });
 
@@ -1786,3 +1716,27 @@ function javaLoaded(){
 
 	document.getElementById('begin-button').style.display = 'inline';
 }
+
+jQuery.extend({
+	/**
+	content = {
+		sipResult: ...,
+		rtpResult: ...,
+		rtpStart: ...,
+		rtpEnd: ...
+	}
+	*/
+	appendResultTooltip: function( elem, content ){
+		// --- populate tooltip content
+		var tooltipContent = '<div id="test-result-exp" class="icon-hdr-status"><div class="tooltip status"><div><strong>SIP Port 5060-5061:</strong></div>\
+		<div>'+content.sipResult+'</div>\
+		<div><strong>RTP Port '+content.rtpStart+'-'+content.rtpEnd+':</strong></div>\
+		<div>'+content.rtpResult+'</div></div></div>';
+
+		if( $('#test-result-exp').length == 1 ){
+			$('#test-result-exp').remove();
+		}
+
+		elem.append(tooltipContent);
+	}
+});
