@@ -221,8 +221,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 					var delta, R, MOS;
 
 					//using the default values----
-					//R=93 for the G.711 codec, 
-					//R=80 for the G.729a codec and 
+					//R=93 for the G.711 codec,
+					//R=80 for the G.729a codec and
 					//R=86 for iLBC codec.
 
 					if( selectedCodec['name'] == 'G.711' ){
@@ -261,7 +261,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				dbItem.qualityTestResult = ( ttlPacketLoss == 0 ) ? 1 : 0;
 			}
 		});
-		
+
 		function newQualityTest(){
 			startTimer = new Date().getTime();
 
@@ -287,7 +287,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 						newUser[address.address].active.push( newUser[address.address].backup[0] );
 
 						socket.broadcast.to(newUser[address.address].backup[0]).emit('unblock',{unblock:true});
-						
+
 						// and remove from backup
 						newUser[address.address].backup.splice(0,1);
 					}
@@ -313,7 +313,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			if( socketSpawn != null ){
 				console.log('child process 2 '+socketSpawn.pid+' killed!?');
 				socketSpawn.kill();
-				socketSpawn = null;	
+				socketSpawn = null;
 			}
 
 		});
