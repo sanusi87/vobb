@@ -1586,6 +1586,60 @@ socket.on("udp_packet_sent", function(resp){
 		//Scanner.beginRTPPortTest( resp.port );
 	//}
 
+
+	// ---
+	pcntCount = ( ( totalRtpPort - Math.abs( currRTPEnd - parseInt(resp.port) ) ) / totalRtpPort ) * 100;
+	pcntCount = parseInt( pcntCount ).toFixed(0);
+
+	// if applet failed to send and receive
+	console.log( rtptest[resp.port] );
+	if( rtptest[resp.port].a.send == true && rtptest[resp.port].a.rcv == true && rtptest[resp.port].v.send == true && rtptest[resp.port].v.rcv == true ){
+		firewallResult = "pass";
+		response = "pass!";
+		jQuery(".bar-sect .bar-hdr").removeClass("fail");
+	}else{
+		firewallResult = "fail";
+		response = "blocked!";
+		jQuery(".bar-sect .bar-hdr").addClass("fail");
+	}
+	jQuery(".lvl-stat").html(response).show().css({transform: "scale(0)"}).animate({transform: "scale(1)"},300, "easeOutBack");
+
+	// lastly display the percentage
+	countPcnt();
+
+	if( startingRTP < currRTPEnd ){
+		startingRTP++;
+
+		setTimeout(function(){
+			checkUDPPort( startingRTP );
+		}, 1000);
+
+	}else{
+		console.log('olright');
+		var s = {};
+		s[settings['sip_min_port']] = siptest1;
+		s[settings['sip_max_port']] = siptest2;
+
+		socket.emit('testFinished', {
+			sipPortMin: settings['sip_min_port'],
+			sipPortMax: settings['sip_max_port'],
+			sipResult: s,
+			rtpPortMin: currRTPStart,
+			rtpPortMax: currRTPEnd,
+			rtpResult: rtptest
+		});
+
+		// terminate udp server one the test finished
+		socket.emit("terminate_udp_server", {
+			port: $('#rtp-start-val').val(),
+			address: local_address
+		});
+
+
+	}
+	// ---
+
+
 	if(resp.port == currRTPEnd ){
 		// --------------
 		console.log('start...');
@@ -1655,55 +1709,7 @@ function setPortStatus( port, sent ){
 	rtptest[port].a.send = sent; // if applet packet is sent
 	//rtptest[port].v.rcv = received; // if got response from vobb server == vobb server received the packet
 
-	pcntCount = ( ( totalRtpPort - Math.abs( currRTPEnd - parseInt(startingRTP) ) ) / totalRtpPort ) * 100;
-	pcntCount = parseInt( pcntCount ).toFixed(0);
 
-	// if applet failed to send and receive
-	console.log( rtptest[port] );
-	if( rtptest[port].a.send == true && rtptest[port].a.rcv == true && rtptest[port].v.send == true && rtptest[port].v.rcv == true ){
-		firewallResult = "pass";
-		response = "pass!";
-		jQuery(".bar-sect .bar-hdr").removeClass("fail");
-	}else{
-		firewallResult = "fail";
-		response = "blocked!";
-		jQuery(".bar-sect .bar-hdr").addClass("fail");
-	}
-	jQuery(".lvl-stat").html(response).show().css({transform: "scale(0)"}).animate({transform: "scale(1)"},300, "easeOutBack");
-
-	// lastly display the percentage
-	countPcnt();
-
-	if( startingRTP < currRTPEnd ){
-		startingRTP++;
-
-		setTimeout(function(){
-			checkUDPPort( startingRTP );
-		}, 1000);
-
-	}else{
-		console.log('olright');
-		var s = {};
-		s[settings['sip_min_port']] = siptest1;
-		s[settings['sip_max_port']] = siptest2;
-
-		socket.emit('testFinished', {
-			sipPortMin: settings['sip_min_port'],
-			sipPortMax: settings['sip_max_port'],
-			sipResult: s,
-			rtpPortMin: currRTPStart,
-			rtpPortMax: currRTPEnd,
-			rtpResult: rtptest
-		});
-
-		// terminate udp server one the test finished
-		socket.emit("terminate_udp_server", {
-			port: $('#rtp-start-val').val(),
-			address: local_address
-		});
-
-
-	}
 }
 
 
