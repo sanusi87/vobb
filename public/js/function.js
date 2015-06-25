@@ -1657,13 +1657,17 @@ socket.on("udp_packet_sent", function(resp){
 				sipPortTestResult = 'Unable to test.';
 			}
 		}
-
-		if( typeof( rtptest ) != 'undefined' && rtptest.length > 0 ){
+		console.log(rtptest);
+		console.log(typeof( rtptest ));
+		console.log(rtptest.length);
+		if( typeof( rtptest ) != 'undefined' ){
 			var allPortsOpened = true;
+			console.log('looping result....');
 			$.each(rtptest, function(i,e){
-				console.log(e);
+				console.log(e.a);
+				console.log(e.v);
 				if( allPortsOpened ){
-					if( e.a.rcv && e.a.send && e.v.rcv && e.v.send ){
+					if( e.a.rcv === true && e.a.send === true && e.v.rcv === true && e.v.send === true ){
 						// do nothing
 					}else{
 						allPortsOpened = false;

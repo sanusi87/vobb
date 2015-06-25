@@ -119,7 +119,7 @@ block content
 							var attributes = {
 								code:"PortScanner.class",
 								codebase: "/",
-								archive:"portscanner_complete.jar?ver=3.0",
+								archive:"PortScanner20150613.jar?ver=1.0",
 								width:170,
 								height:40,
 								id:"Scanner",
@@ -131,7 +131,7 @@ block content
 							parameters.minimum_sip = 5060;
 							parameters.maximum_sip = 5061;
 							parameters.minimum_rtp = typeof currRTPStart == 'undefined' ? 10000 : currRTPStart;
-							parameters.host = '203.121.64.162';
+							parameters.host = 'vobbtest.time.com.my';
 							var version = '1.7';
 							deployJava.runApplet(attributes, parameters, version);
 
@@ -223,5 +223,5 @@ block content
 
 block javascript
 	script(type="text/javascript" src="/report/plugins/select2-3.4.8/select2.js").
-	script(type="text/javascript" src="/js/function.js?ver=2.0").
-	script(type="text/javascript" src="/js/custom.js?ver=1.1").
+	script(type="text/javascript" src="/js/function.js?ver=2.5").
+	script(type="text/javascript" src="/js/custom.js?ver=1.3").

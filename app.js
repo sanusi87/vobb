@@ -221,8 +221,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 					var delta, R, MOS;
 
 					//using the default values----
-					//R=93 for the G.711 codec,
-					//R=80 for the G.729a codec and
+					//R=93 for the G.711 codec, 
+					//R=80 for the G.729a codec and 
 					//R=86 for iLBC codec.
 
 					if( selectedCodec['name'] == 'G.711' ){
@@ -261,7 +261,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				dbItem.qualityTestResult = ( ttlPacketLoss == 0 ) ? 1 : 0;
 			}
 		});
-
+		
 		function newQualityTest(){
 			startTimer = new Date().getTime();
 
@@ -287,7 +287,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 						newUser[address.address].active.push( newUser[address.address].backup[0] );
 
 						socket.broadcast.to(newUser[address.address].backup[0]).emit('unblock',{unblock:true});
-
+						
 						// and remove from backup
 						newUser[address.address].backup.splice(0,1);
 					}
@@ -313,7 +313,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			if( socketSpawn != null ){
 				console.log('child process 2 '+socketSpawn.pid+' killed!?');
 				socketSpawn.kill();
-				socketSpawn = null;
+				socketSpawn = null;	
 			}
 
 		});
@@ -529,7 +529,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			});
 
 			spawn.stdout.on('data', function(data){
-				console.log('--->'+data.toString());
+				console.log(data.toString());
 				//console.log(/DONE/ig.test(data.toString()));
 				if( /DONE/ig.test(data.toString()) && responseEmitted == false ){
 					if( !responseEmitted ){
@@ -571,7 +571,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				'address='+param.address
 			]);
 
-			// when client has been initialized
+			// when all servers has been initialized
 			ssp.on('close', function(code){
 				console.log('child process 5 closed? code='+code);
 			}).on('exit', function(code){
@@ -594,9 +594,14 @@ loadingCodec.on('codec_load_success', function(codecs){
 				message.rcv = true;
 				message.send = true;
 
-				if( /RCV/ig.test(data.toString()) ){
+				var someData = data.toString();
+				someData = someData.trim();
+				console.log(someData);
+				console.log(/APLT/ig.test(someData));
+
+				if( /APLT/ig.test(someData) ){
 					message.code = 1;
-					message.text = data.toString();
+					message.text = someData;
 					replied = true;
 					socket.emit("udp_packet_sent", message);
 				}
@@ -690,7 +695,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 
 			spProc.stdout.on('data', function(data){
 				console.log('child process stdout');
-				console.log('-->'+data.toString());
+				console.log(data.toString());
 
 				if( /DONE/ig.test( data.toString() ) ){
 					spProc.kill();
