@@ -1675,7 +1675,10 @@ socket.on("udp_packet_sent", function(resp){
 		}else{
 			rtpPortTestResult = 'Ports closed/used by other application.';
 		}
-
+		
+		console.log( $('.tab-result.selected').length );
+		console.log( $('.tab-result.selected') );
+		
 		// --- populate tooltip content
 		$.appendResultTooltip( $('.tab-result.selected'), {
 			sipResult: sipPortTestResult,
