@@ -611,7 +611,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			//-------------------- 3000ms = 3s
 			var autoReplyIntv = setInterval(function(){
 				if( !replied ){
-					if( waitTimer > 3500 ){
+					if( waitTimer > 2000 ){
 						clearInterval( autoReplyIntv );
 						replied = true;
 
