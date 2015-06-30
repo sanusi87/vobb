@@ -582,6 +582,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 				message.code = 0;
 				message.text = 'Failed to spawn a child process 5 to send UDP packet!';
 				socket.emit("udp_packet_sent", message);
+			}).on('message', function(msg){
+				console.log('msg received!!'+ msg);
 			});
 
 			var replied = false,
