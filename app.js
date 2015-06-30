@@ -531,7 +531,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			});
 
 			spawn.stdout.on('data', function(data){
-				console.log('receiving from child proc 5...');
+				console.log('receiving from child proc 4...');
 				console.log(data.toString());
 				//console.log(/DONE/ig.test(data.toString()));
 				if( /DONE/ig.test(data.toString()) && responseEmitted == false ){
@@ -551,11 +551,12 @@ loadingCodec.on('codec_load_success', function(codecs){
 					var someData = data.toString();
 					someData = someData.trim();
 
-					if( /APLT/ig.test(someData) && someData.substr(0,5) == message.port ){
+					if( /APLT/ig.test(someData) ){
+						message.port = someData.substr(0,5);
 						message.code = 1;
 						message.text = someData;
-						replied = true;
-						socket.emit("udp_packet_sent", message);
+						//replied = true;
+						socket.emit("udp_packet_received", message);
 					}
 				}
 			});
@@ -609,24 +610,24 @@ loadingCodec.on('codec_load_success', function(codecs){
 			waitTimer = 0;
 
 			// if received a REPLY from applet
-			ssp.stdout.on('data', function(data){
-				console.log('receiving from child proc 5...');
-				console.log('-->'+data.toString());
-				message.rcv = true;
-				message.send = true;
+			// ssp.stdout.on('data', function(data){
+				// console.log('receiving from child proc 5...');
+				// console.log('-->'+data.toString());
+				// message.rcv = true;
+				// message.send = true;
 
-				var someData = data.toString();
-				someData = someData.trim();
-				console.log(someData);
-				console.log(/APLT/ig.test(someData));
+				// var someData = data.toString();
+				// someData = someData.trim();
+				// console.log(someData);
+				// console.log(/APLT/ig.test(someData));
 
-				if( /APLT/ig.test(someData) ){
-					message.code = 1;
-					message.text = someData;
-					replied = true;
-					socket.emit("udp_packet_sent", message);
-				}
-			});
+				// if( /APLT/ig.test(someData) ){
+					// message.code = 1;
+					// message.text = someData;
+					// replied = true;
+					// socket.emit("udp_packet_sent", message);
+				// }
+			// });
 
 			// if no reply from client applet, for the desinated interval, then send error----------------------------------
 			//-------------------- 3000ms = 3s
@@ -650,9 +651,9 @@ loadingCodec.on('codec_load_success', function(codecs){
 			// }, 30);
 			//--------------------
 			
-			setTimeout(function(){
-				ssp.kill();
-			}, 3500);
+			// setTimeout(function(){
+				// ssp.kill();
+			// }, 3500);
 			
 			ssp.stderr.on('data', function(err){
 				console.log('stderr. code='+err);

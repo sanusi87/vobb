@@ -1690,6 +1690,18 @@ socket.on("udp_packet_sent", function(resp){
 	}
 });
 
+socket.on("udp_packet_received", function(msg){
+	if( typeof( rtptest[resp.port] ) == 'undefined' ){
+		rtptest[resp.port] = {};
+	}
+	
+	if( typeof( rtptest[resp.port].v ) == 'undefined' ){
+		rtptest[resp.port].v = {};
+	}
+	
+	rtptest[resp.port].v.rcv = msg.rcv;
+});
+
 socket.on("udp_rcv_stat", function(stat){
 	console.log(stat);
 });
