@@ -1748,9 +1748,9 @@ function setPortStatus( port, sent ){
 	if( startingRTP < currRTPEnd ){
 		startingRTP++;
 
-		//setTimeout(function(){
+		setTimeout(function(){
 			checkUDPPort( startingRTP );
-		//}, 1000);
+		}, 1000);
 	}
 }
 
