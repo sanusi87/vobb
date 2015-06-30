@@ -551,7 +551,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 					var someData = data.toString();
 					someData = someData.trim();
 
-					if( /APLT/ig.test(someData) ){
+					if( /APLT/ig.test(someData) && someData.substr(0,5) == message.port ){
 						message.code = 1;
 						message.text = someData;
 						replied = true;
