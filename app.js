@@ -565,11 +565,11 @@ loadingCodec.on('codec_load_success', function(codecs){
 			message.port = param.port;
 
 			// udp client sending VOBB message to applet
-			var ssp = childProcess(vobb.udp.client.process, { stdio: [ 1, 'pipe' ] }, [
+			var ssp = childProcess(vobb.udp.client.process, [
 				vobb.udp.client.file,
 				'port='+param.port,
 				'address='+param.address
-			]);
+			], { stdio: [ 1, 'pipe' ] });
 
 			// when all servers has been initialized
 			ssp.on('close', function(code){
