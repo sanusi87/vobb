@@ -630,26 +630,30 @@ loadingCodec.on('codec_load_success', function(codecs){
 
 			// if no reply from client applet, for the desinated interval, then send error----------------------------------
 			//-------------------- 3000ms = 3s
-			var autoReplyIntv = setInterval(function(){
-				if( !replied ){
-					if( waitTimer > 1500 ){
-						clearInterval( autoReplyIntv );
-						replied = true;
+			// var autoReplyIntv = setInterval(function(){
+				// if( !replied ){
+					// if( waitTimer > 1500 ){
+						// clearInterval( autoReplyIntv );
+						// replied = true;
 
-						message.code = 0;
-						message.rcv = false;
-						message.text = 'Timeout while waiting for packet!';
-						socket.emit("udp_packet_sent", message);
-						ssp.kill();
-					}
-				}else{
-					clearInterval( autoReplyIntv );
-					ssp.kill();
-				}
-				waitTimer += 10;
-			}, 30);
+						// message.code = 0;
+						// message.rcv = false;
+						// message.text = 'Timeout while waiting for packet!';
+						// socket.emit("udp_packet_sent", message);
+						// ssp.kill();
+					// }
+				// }else{
+					// clearInterval( autoReplyIntv );
+					// ssp.kill();
+				// }
+				// waitTimer += 10;
+			// }, 30);
 			//--------------------
-
+			
+			setTimeout(function(){
+				ssp.kill();
+			}, 3500);
+			
 			ssp.stderr.on('data', function(err){
 				console.log('stderr. code='+err);
 
