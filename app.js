@@ -497,8 +497,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 			if( data.address == address.address ){
 				socket.emit("checked_address", {status:"same"});
 			}else{
-				//socket.emit("checked_address", {status:"same"});
-				socket.emit("checked_address", {status:"different"});
+				socket.emit("checked_address", {status:"same"});
+				//socket.emit("checked_address", {status:"different"});
 			}
 		});
 
@@ -507,7 +507,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			//var ssh = new sshconn();
 			var message = {};
 			message.port = param.port;
-			
+
 			var responseEmitted = false;
 
 			// execute/start child process asynchronously
@@ -515,7 +515,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				vobb.udp.command.file,
 				'port='+param.port,
 				'address='+vobb.ip.private
-			]);
+			], { stdio: [ 1, 'pipe' ] });
 
 			// when all servers has been initialized
 			spawn.on('close', function(code){
@@ -556,7 +556,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 						message.code = 1;
 						message.text = someData;
 						//replied = true;
-						socket.emit("udp_packet_sent", message);
+						socket.emit("udp_packet_received", message);
 						// socket.emit("udp_packet_received", message);
 					// }
 				}
@@ -591,6 +591,9 @@ loadingCodec.on('codec_load_success', function(codecs){
 				'port='+param.port,
 				'address='+param.address
 			], { stdio: [ 1, 'pipe' ] });
+			console.log(vobb.udp.client.process);
+			console.log(vobb.udp.client.file);
+			console.log(param.address+':'+param.port);
 
 			// when all servers has been initialized
 			ssp.on('close', function(code){
@@ -651,11 +654,11 @@ loadingCodec.on('codec_load_success', function(codecs){
 				// waitTimer += 10;
 			// }, 30);
 			//--------------------
-			
+
 			// setTimeout(function(){
 				// ssp.kill();
 			// }, 3500);
-			
+
 			ssp.stderr.on('data', function(err){
 				console.log('stderr. code='+err);
 
@@ -710,9 +713,9 @@ loadingCodec.on('codec_load_success', function(codecs){
 			}).on('exit', function(code){
 				console.log('child process 3 exited');
 
-				message.code = 0;
-				message.text = 'child process exited';
-				socket.emit("tcp_packet_sent", message);
+				//message.code = 0;
+				//message.text = 'child process exited';
+				//socket.emit("tcp_packet_sent", message);
 			}).on('error', function(code){
 				console.log('child process 3 error');
 				message.code = 0;

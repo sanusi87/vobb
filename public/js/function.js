@@ -120,6 +120,9 @@ var failSet = {
 //---
 
 var titleText = null;
+var SIP5060Received = false,
+SIP5061Received = false,
+lastCalculation = false;
 
 jQuery(function($){
 	titleText = $(document).find('title').text();
@@ -267,6 +270,10 @@ function resetApp(){
 	rtptest = {};
 	delete( siptest1 );
 	delete( siptest2 );
+
+	SIP5060Received = false;
+	SIP5061Received = false;
+	lastCalculation = false;
 
 	theFormCtnt.show();
 
@@ -609,7 +616,8 @@ function countPcnt(){
 		jQuery(document).find('title').text( titleText+' | '+pcntCount+'%' );
 	};
 
-	setBubbleCount();
+	var pcntStr = pcntCount + "%";
+	rocketBubble.find(".progress-num").html(pcntStr);
 
 };
 
@@ -623,12 +631,6 @@ function hideRocketBubble(){
 	});
 
 };
-
-function setBubbleCount(){
-	var pcntStr = pcntCount + "%";
-	rocketBubble.find(".progress-num").html(pcntStr);
-};
-
 //-------quality test---------------------//
 
 function runQualityTest(){
@@ -1379,13 +1381,17 @@ socket.on("tcp_packet_sent", function(data){
 socket.on("tcp_packet_received", function(data){
 	console.log('vobb: tcp_packet_received??');
 	console.log(data);
-	if( data.port == 5060 ){
+
+	if( SIP5060Received === false && data.port == 5060 ){
 		sipResult[5060].v.rcv = data.rcv;
 		sipResult[5060].v.send = data.send;
-	}else if( data.port == 5061 ){
+		SIP5060Received = true;
+	}else if( SIP5061Received === false && data.port == 5061 ){
 		sipResult[5061].v.rcv = data.rcv;
-		sipResult[5060].v.send = data.send;
+		sipResult[5061].v.send = data.send;
+		SIP5061Received = true;
 	}
+
 });
 
 // executed by applet while "socket.on(tcp_packet_sent") is running
@@ -1545,8 +1551,8 @@ function udpServerRequestTest( port ){
 // applet have success/fail to created UDP server?
 // if success, then applet will ask vobb to test send a packet to the server:port
 function udpServerCreated( port, createStatus, listenStatus ){
-	console.log('applet: saving server creation info..');
-	console.log(port + ' -> '+ createStatus);
+	//console.log('applet: saving server creation info..');
+	console.log('applet server created: '+port + ' -> '+ createStatus);
 
 	// if applet successfully created UDP server, request vobb server to send packet to applet
 	// we might also want to request vobb server to send packet even though the UDP server failed to be created, so that we can test for packet send, or we can assume that a packet can be send from vobb server??
@@ -1567,8 +1573,8 @@ function udpServerCreated( port, createStatus, listenStatus ){
 	}
 
 	// applet: test sending a packet to vobb server
-	 console.log('applet: sending packet to vobb:'+ port);
-	Scanner.beginRTPPortTest( port );
+ 	// console.log('applet: sending packet to vobb:'+ port);
+	//Scanner.beginRTPPortTest( port );
 }
 
 // vobb: received from applet
@@ -1640,7 +1646,9 @@ socket.on("udp_packet_sent", function(resp){
 	// ---
 
 
-	if(resp.port == currRTPEnd ){
+	if(resp.port == currRTPEnd && lastCalculation == false ){
+		lastCalculation = true;
+
 		// --------------
 		console.log('start...');
 		var sipPortTestResult = '',
@@ -1656,8 +1664,6 @@ socket.on("udp_packet_sent", function(resp){
 			var allPortsOpened = true;
 			console.log('looping result....');
 			$.each(rtptest, function(i,e){
-				console.log(e.a);
-				console.log(e.v);
 				if( allPortsOpened ){
 					if( e.a.rcv === true && e.a.send === true && e.v.rcv === true && e.v.send === true ){
 						// do nothing
@@ -1675,10 +1681,10 @@ socket.on("udp_packet_sent", function(resp){
 		}else{
 			rtpPortTestResult = 'Ports closed/used by other application.';
 		}
-		
+
 		console.log( $('.tab-result.selected').length );
 		console.log( $('.tab-result.selected') );
-		
+
 		// --- populate tooltip content
 		$.appendResultTooltip( $('.tab-result.selected'), {
 			sipResult: sipPortTestResult,
@@ -1694,13 +1700,11 @@ socket.on("udp_packet_received", function(msg){
 	if( typeof( rtptest[msg.port] ) == 'undefined' ){
 		rtptest[msg.port] = {};
 	}
-	
+
 	if( typeof( rtptest[msg.port].v ) == 'undefined' ){
 		rtptest[msg.port].v = {};
 	}
-	
-	rtptest[msg.port].v.rcv = msg.rcv;
-	
+	updateVobbReceiveStatus(msg.port, msg.rcv);
 });
 
 // socket.on("udp_rcv_stat", function(stat){
@@ -1719,39 +1723,12 @@ function setReceiveStatus( port ){
 function setPortStatus( port, sent ){
 	console.log('finalizing test on port '+port+'...');
 	console.log('port='+port+', status='+sent);
-	var response = null;
+	//var response = null;
 
 	// save applet respond
-	rtptest[port].a.send = sent; // if applet packet is sent
+	//rtptest[port].a.send = sent; // if applet packet is sent
 	//rtptest[port].v.rcv = received; // if got response from vobb server == vobb server received the packet
-	
-	// ------------
-	pcntCount = ( ( totalRtpPort - Math.abs( currRTPEnd - parseInt(port) ) ) / totalRtpPort ) * 100;
-	pcntCount = parseInt( pcntCount ).toFixed(0);
-
-	// if applet failed to send and receive
-	console.log( rtptest[port] );
-	if( rtptest[port].a.send == true && rtptest[port].a.rcv == true && rtptest[port].v.send == true && rtptest[port].v.rcv == true ){
-		firewallResult = "pass";
-		response = "pass!";
-		jQuery(".bar-sect .bar-hdr").removeClass("fail");
-	}else{
-		firewallResult = "fail";
-		response = "blocked!";
-		jQuery(".bar-sect .bar-hdr").addClass("fail");
-	}
-	jQuery(".lvl-stat").html(response).show().css({transform: "scale(0)"}).animate({transform: "scale(1)"},300, "easeOutBack");
-
-	// lastly display the percentage
-	countPcnt();
-	
-	if( startingRTP < currRTPEnd ){
-		startingRTP++;
-
-		setTimeout(function(){
-			checkUDPPort( startingRTP );
-		}, 1000);
-	}
+	updateAppletSendStatus( port, sent );
 }
 
 
@@ -1764,6 +1741,44 @@ function javaLoaded(){
 
 	document.getElementById('begin-button').style.display = 'inline';
 }
+
+/**
+list of functions to update VoBB port and Applet port
+*/
+function updateVobbReceiveStatus(port, status){
+	if( typeof( rtptest[port] ) == 'undefined' ){
+		rtptest[port] = {
+			v: {}
+		};
+	}
+	rtptest[port].v.rcv = status;
+
+}
+function updateVobbSendStatus(port, status){
+	if( typeof( rtptest[port] ) == 'undefined' ){
+		rtptest[port] = {
+			v: {}
+		};
+	}
+	rtptest[port].v.send = status;
+}
+function updateAppletReceiveStatus(port, status){
+	if( typeof( rtptest[port] ) == 'undefined' ){
+		rtptest[port] = {
+			a: {}
+		};
+	}
+	rtptest[port].a.rcv = status;
+}
+function updateAppletSendStatus(port, status){
+	if( typeof( rtptest[port] ) == 'undefined' ){
+		rtptest[port] = {
+			a: {}
+		};
+	}
+	rtptest[port].a.send = status;
+}
+/* -- end -- */
 
 jQuery.extend({
 	/**
