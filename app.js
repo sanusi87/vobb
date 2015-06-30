@@ -506,6 +506,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 		socket.on("prepare_udp_server", function( param ){
 			//var ssh = new sshconn();
 			var message = {};
+			message.port = param.port;
+			
 			var responseEmitted = false;
 
 			// execute/start child process asynchronously
@@ -513,7 +515,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				vobb.udp.command.file,
 				'port='+param.port,
 				'address='+vobb.ip.private
-			], { stdio: [ 1, 'pipe' ] });
+			]);
 
 			// when all servers has been initialized
 			spawn.on('close', function(code){
@@ -537,7 +539,6 @@ loadingCodec.on('codec_load_success', function(codecs){
 						message.code = 1;
 						message.text = 'UDP servers started!';
 						socket.emit("udp_server_prepared", message);
-
 						responseEmitted = true;
 					}
 				}
