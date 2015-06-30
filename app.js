@@ -551,13 +551,14 @@ loadingCodec.on('codec_load_success', function(codecs){
 					var someData = data.toString();
 					someData = someData.trim();
 
-					if( /APLT/ig.test(someData) ){
+					// if( /APLT/ig.test(someData) ){
 						message.port = someData.substr(0,5);
 						message.code = 1;
 						message.text = someData;
 						//replied = true;
-						socket.emit("udp_packet_received", message);
-					}
+						socket.emit("udp_packet_sent", message);
+						// socket.emit("udp_packet_received", message);
+					// }
 				}
 			});
 

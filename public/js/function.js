@@ -1724,8 +1724,34 @@ function setPortStatus( port, sent ){
 	// save applet respond
 	rtptest[port].a.send = sent; // if applet packet is sent
 	//rtptest[port].v.rcv = received; // if got response from vobb server == vobb server received the packet
+	
+	// ------------
+	pcntCount = ( ( totalRtpPort - Math.abs( currRTPEnd - parseInt(port) ) ) / totalRtpPort ) * 100;
+	pcntCount = parseInt( pcntCount ).toFixed(0);
 
+	// if applet failed to send and receive
+	console.log( rtptest[port] );
+	if( rtptest[port].a.send == true && rtptest[port].a.rcv == true && rtptest[port].v.send == true && rtptest[port].v.rcv == true ){
+		firewallResult = "pass";
+		response = "pass!";
+		jQuery(".bar-sect .bar-hdr").removeClass("fail");
+	}else{
+		firewallResult = "fail";
+		response = "blocked!";
+		jQuery(".bar-sect .bar-hdr").addClass("fail");
+	}
+	jQuery(".lvl-stat").html(response).show().css({transform: "scale(0)"}).animate({transform: "scale(1)"},300, "easeOutBack");
 
+	// lastly display the percentage
+	countPcnt();
+	
+	if( startingRTP < currRTPEnd ){
+		startingRTP++;
+
+		//setTimeout(function(){
+			checkUDPPort( startingRTP );
+		//}, 1000);
+	}
 }
 
 
