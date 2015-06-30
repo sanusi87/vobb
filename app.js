@@ -513,7 +513,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				vobb.udp.command.file,
 				'port='+param.port,
 				'address='+vobb.ip.private
-			]);
+			], { stdio: [ 1, 'pipe' ] });
 
 			// when all servers has been initialized
 			spawn.on('close', function(code){
@@ -529,6 +529,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			});
 
 			spawn.stdout.on('data', function(data){
+				console.log('receiving from child proc 5...');
 				console.log(data.toString());
 				//console.log(/DONE/ig.test(data.toString()));
 				if( /DONE/ig.test(data.toString()) && responseEmitted == false ){
@@ -542,9 +543,20 @@ loadingCodec.on('codec_load_success', function(codecs){
 				}
 
 				// receive from applet
-				//if( /APLT/ig.test(data.toString()) ){
-				//	socket.emit("udp_rcv_stat", {port: stat:true});
-				//}
+				if( /APLT/ig.test(data.toString()) ){
+					message.rcv = true;
+					message.send = true;
+
+					var someData = data.toString();
+					someData = someData.trim();
+
+					if( /APLT/ig.test(someData) ){
+						message.code = 1;
+						message.text = someData;
+						replied = true;
+						socket.emit("udp_packet_sent", message);
+					}
+				}
 			});
 
 			spawn.stderr.on('data', function(err){
