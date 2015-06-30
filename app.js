@@ -506,6 +506,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 		socket.on("prepare_udp_server", function( param ){
 			//var ssh = new sshconn();
 			var message = {};
+			message.port = param.port;
+			
 			var responseEmitted = false;
 
 			// execute/start child process asynchronously
@@ -529,6 +531,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			});
 
 			spawn.stdout.on('data', function(data){
+				console.log('receiving from child proc 4...');
 				console.log(data.toString());
 				//console.log(/DONE/ig.test(data.toString()));
 				if( /DONE/ig.test(data.toString()) && responseEmitted == false ){
@@ -536,19 +539,37 @@ loadingCodec.on('codec_load_success', function(codecs){
 						message.code = 1;
 						message.text = 'UDP servers started!';
 						socket.emit("udp_server_prepared", message);
-
 						responseEmitted = true;
 					}
 				}
 
 				// receive from applet
-				//if( /APLT/ig.test(data.toString()) ){
-				//	socket.emit("udp_rcv_stat", {port: stat:true});
-				//}
+				if( /APLT/ig.test(data.toString()) ){
+					message.rcv = true;
+					message.send = true;
+
+					var someData = data.toString();
+					someData = someData.trim();
+
+					// if( /APLT/ig.test(someData) ){
+						message.port = someData.substr(0,5);
+						message.code = 1;
+						message.text = someData;
+						//replied = true;
+						socket.emit("udp_packet_sent", message);
+						// socket.emit("udp_packet_received", message);
+					// }
+				}
 			});
 
 			spawn.stderr.on('data', function(err){
 				console.log('stderr. code='+err);
+
+				message.code = 0;
+				message.text = 'Failed to prepare UDP servers!';
+				socket.emit("udp_server_prepared", message);
+			}).on('error', function(err){
+				console.log('stderr err. code='+err);
 
 				message.code = 0;
 				message.text = 'Failed to prepare UDP servers!';
@@ -569,7 +590,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				vobb.udp.client.file,
 				'port='+param.port,
 				'address='+param.address
-			]);
+			], { stdio: [ 1, 'pipe' ] });
 
 			// when all servers has been initialized
 			ssp.on('close', function(code){
@@ -582,53 +603,59 @@ loadingCodec.on('codec_load_success', function(codecs){
 				message.code = 0;
 				message.text = 'Failed to spawn a child process 5 to send UDP packet!';
 				socket.emit("udp_packet_sent", message);
+			}).on('message', function(msg){
+				console.log('msg received!!'+ msg);
 			});
 
 			var replied = false,
 			waitTimer = 0;
 
 			// if received a REPLY from applet
-			ssp.stdout.on('data', function(data){
-				console.log('receiving from child proc 5...');
-				console.log('-->'+data.toString());
-				message.rcv = true;
-				message.send = true;
+			// ssp.stdout.on('data', function(data){
+				// console.log('receiving from child proc 5...');
+				// console.log('-->'+data.toString());
+				// message.rcv = true;
+				// message.send = true;
 
-				var someData = data.toString();
-				someData = someData.trim();
-				console.log(someData);
-				console.log(/APLT/ig.test(someData));
+				// var someData = data.toString();
+				// someData = someData.trim();
+				// console.log(someData);
+				// console.log(/APLT/ig.test(someData));
 
-				if( /APLT/ig.test(someData) ){
-					message.code = 1;
-					message.text = someData;
-					replied = true;
-					socket.emit("udp_packet_sent", message);
-				}
-			});
+				// if( /APLT/ig.test(someData) ){
+					// message.code = 1;
+					// message.text = someData;
+					// replied = true;
+					// socket.emit("udp_packet_sent", message);
+				// }
+			// });
 
 			// if no reply from client applet, for the desinated interval, then send error----------------------------------
 			//-------------------- 3000ms = 3s
-			var autoReplyIntv = setInterval(function(){
-				if( !replied ){
-					if( waitTimer > 3500 ){
-						clearInterval( autoReplyIntv );
-						replied = true;
+			// var autoReplyIntv = setInterval(function(){
+				// if( !replied ){
+					// if( waitTimer > 1500 ){
+						// clearInterval( autoReplyIntv );
+						// replied = true;
 
-						message.code = 0;
-						message.rcv = false;
-						message.text = 'Timeout while waiting for packet!';
-						socket.emit("udp_packet_sent", message);
-						ssp.kill();
-					}
-				}else{
-					clearInterval( autoReplyIntv );
-					ssp.kill();
-				}
-				waitTimer += 10;
-			}, 30);
+						// message.code = 0;
+						// message.rcv = false;
+						// message.text = 'Timeout while waiting for packet!';
+						// socket.emit("udp_packet_sent", message);
+						// ssp.kill();
+					// }
+				// }else{
+					// clearInterval( autoReplyIntv );
+					// ssp.kill();
+				// }
+				// waitTimer += 10;
+			// }, 30);
 			//--------------------
-
+			
+			// setTimeout(function(){
+				// ssp.kill();
+			// }, 3500);
+			
 			ssp.stderr.on('data', function(err){
 				console.log('stderr. code='+err);
 

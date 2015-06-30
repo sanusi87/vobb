@@ -1675,7 +1675,10 @@ socket.on("udp_packet_sent", function(resp){
 		}else{
 			rtpPortTestResult = 'Ports closed/used by other application.';
 		}
-
+		
+		console.log( $('.tab-result.selected').length );
+		console.log( $('.tab-result.selected') );
+		
 		// --- populate tooltip content
 		$.appendResultTooltip( $('.tab-result.selected'), {
 			sipResult: sipPortTestResult,
@@ -1687,9 +1690,22 @@ socket.on("udp_packet_sent", function(resp){
 	}
 });
 
-socket.on("udp_rcv_stat", function(stat){
-	console.log(stat);
+socket.on("udp_packet_received", function(msg){
+	if( typeof( rtptest[msg.port] ) == 'undefined' ){
+		rtptest[msg.port] = {};
+	}
+	
+	if( typeof( rtptest[msg.port].v ) == 'undefined' ){
+		rtptest[msg.port].v = {};
+	}
+	
+	rtptest[msg.port].v.rcv = msg.rcv;
+	
 });
+
+// socket.on("udp_rcv_stat", function(stat){
+	// console.log(stat);
+// });
 
 // if this port able to receive something, it also means that the vobb server also able to send
 function setReceiveStatus( port ){
@@ -1708,8 +1724,34 @@ function setPortStatus( port, sent ){
 	// save applet respond
 	rtptest[port].a.send = sent; // if applet packet is sent
 	//rtptest[port].v.rcv = received; // if got response from vobb server == vobb server received the packet
+	
+	// ------------
+	pcntCount = ( ( totalRtpPort - Math.abs( currRTPEnd - parseInt(port) ) ) / totalRtpPort ) * 100;
+	pcntCount = parseInt( pcntCount ).toFixed(0);
 
+	// if applet failed to send and receive
+	console.log( rtptest[port] );
+	if( rtptest[port].a.send == true && rtptest[port].a.rcv == true && rtptest[port].v.send == true && rtptest[port].v.rcv == true ){
+		firewallResult = "pass";
+		response = "pass!";
+		jQuery(".bar-sect .bar-hdr").removeClass("fail");
+	}else{
+		firewallResult = "fail";
+		response = "blocked!";
+		jQuery(".bar-sect .bar-hdr").addClass("fail");
+	}
+	jQuery(".lvl-stat").html(response).show().css({transform: "scale(0)"}).animate({transform: "scale(1)"},300, "easeOutBack");
 
+	// lastly display the percentage
+	countPcnt();
+	
+	if( startingRTP < currRTPEnd ){
+		startingRTP++;
+
+		setTimeout(function(){
+			checkUDPPort( startingRTP );
+		}, 1000);
+	}
 }
 
 
