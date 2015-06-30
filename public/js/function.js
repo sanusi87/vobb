@@ -1700,11 +1700,12 @@ socket.on("udp_packet_received", function(msg){
 	}
 	
 	rtptest[msg.port].v.rcv = msg.rcv;
+	
 });
 
-socket.on("udp_rcv_stat", function(stat){
-	console.log(stat);
-});
+// socket.on("udp_rcv_stat", function(stat){
+	// console.log(stat);
+// });
 
 // if this port able to receive something, it also means that the vobb server also able to send
 function setReceiveStatus( port ){
