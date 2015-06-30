@@ -497,8 +497,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 			if( data.address == address.address ){
 				socket.emit("checked_address", {status:"same"});
 			}else{
-				socket.emit("checked_address", {status:"same"});
-				//socket.emit("checked_address", {status:"different"});
+				//socket.emit("checked_address", {status:"same"});
+				socket.emit("checked_address", {status:"different"});
 			}
 		});
 
