@@ -565,6 +565,12 @@ loadingCodec.on('codec_load_success', function(codecs){
 				message.code = 0;
 				message.text = 'Failed to prepare UDP servers!';
 				socket.emit("udp_server_prepared", message);
+			}).on('error', function(err){
+				console.log('stderr err. code='+err);
+
+				message.code = 0;
+				message.text = 'Failed to prepare UDP servers!';
+				socket.emit("udp_server_prepared", message);
 			});
 		});
 
