@@ -1582,8 +1582,9 @@ socket.on("udp_packet_sent", function(resp){
 	console.log('vobb: UDP packetsent??');
 	console.log(resp);
 
-	rtptest[resp.port].v.send = resp.send ? true : false; // if vobb packet is sent
-	rtptest[resp.port].v.rcv = resp.rcv ? true : false; // if vobb packet is received at applet ... got response from packet
+	updateVobbSendStatus( resp.port, resp.send );
+	//rtptest[resp.port].v.send = resp.send ? true : false; // if vobb packet is sent
+	//rtptest[resp.port].v.rcv = resp.rcv ? true : false; // if vobb packet is received at applet ... got response from packet
 
 	// applet: send packet to vobb
 	// if record for this port is already exists, the first time the result for this port is returned
