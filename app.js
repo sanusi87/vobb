@@ -619,9 +619,9 @@ loadingCodec.on('codec_load_success', function(codecs){
 				'port='+param.port,
 				'address='+param.address
 			], { stdio: [ 0, 'pipe' ] });
-			console.log(vobb.udp.client.process);
-			console.log(vobb.udp.client.file);
-			console.log(param.address+':'+param.port);
+			// console.log(vobb.udp.client.process);
+			// console.log(vobb.udp.client.file);
+			// console.log(param.address+':'+param.port);
 
 			// when all servers has been initialized
 			ssp.on('close', function(code){
@@ -645,6 +645,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			ssp.stdout.on('data', function(data){
 				// console.log('receiving from child proc 5...');
 				console.log('-->'+data.toString());
+				console.log( /^packet.sent/g.test( data.toString() ) );
 				// message.rcv = true;
 				// message.send = true;
 
