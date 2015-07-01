@@ -925,6 +925,50 @@ function showEndResult(){
 				rtpEnd: currRTPEnd,
 			});
 			// ---
+		}else{
+			console.log('start...');
+			var sipPortTestResult = '',
+			rtpPortTestResult = '';
+
+			if( typeof(siptest1) != 'undefined' && typeof(siptest2) != 'undefined' && siptest1 && siptest2 ){
+				sipPortTestResult = 'Ports are opened.';
+			}else{
+				sipPortTestResult = 'Ports closed/used by other application.';
+			}
+
+			if( typeof( rtptest ) != 'undefined' ){
+				var allPortsOpened = true;
+				console.log('looping result....');
+				$.each(rtptest, function(i,e){
+					if( allPortsOpened ){
+						if( e.a.rcv === true && e.a.send === true && e.v.rcv === true && e.v.send === true ){
+							// do nothing
+						}else{
+							allPortsOpened = false;
+						}
+					}
+				});
+
+				if( allPortsOpened ){
+					rtpPortTestResult = 'Ports are opened.';
+				}else{
+					rtpPortTestResult = 'Ports closed/used by other application.';
+				}
+			}else{
+				rtpPortTestResult = 'Ports closed/used by other application.';
+			}
+
+			console.log( $('.tab-result.selected').length );
+			console.log( $('.tab-result.selected') );
+
+			// --- populate tooltip content
+			$.appendResultTooltip( $('.tab-result.selected'), {
+				sipResult: sipPortTestResult,
+				rtpResult: rtpPortTestResult,
+				rtpStart: currRTPStart,
+				rtpEnd: currRTPEnd,
+			});
+			// --- populate tooltip content
 		}
 
 	}else if(endResultStat == "fail-result"){
@@ -1582,8 +1626,9 @@ socket.on("udp_packet_sent", function(resp){
 	console.log('vobb: UDP packetsent??');
 	console.log(resp);
 
-	rtptest[resp.port].v.send = resp.send ? true : false; // if vobb packet is sent
-	rtptest[resp.port].v.rcv = resp.rcv ? true : false; // if vobb packet is received at applet ... got response from packet
+	updateVobbSendStatus( resp.port, resp.send );
+	//rtptest[resp.port].v.send = resp.send ? true : false; // if vobb packet is sent
+	//rtptest[resp.port].v.rcv = resp.rcv ? true : false; // if vobb packet is received at applet ... got response from packet
 
 	// applet: send packet to vobb
 	// if record for this port is already exists, the first time the result for this port is returned
@@ -1649,50 +1694,7 @@ socket.on("udp_packet_sent", function(resp){
 	if(resp.port == currRTPEnd && lastCalculation == false ){
 		lastCalculation = true;
 
-		// --------------
-		console.log('start...');
-		var sipPortTestResult = '',
-		rtpPortTestResult = '';
-
-		if( typeof(siptest1) != 'undefined' && typeof(siptest2) != 'undefined' && siptest1 && siptest2 ){
-			sipPortTestResult = 'Ports are opened.';
-		}else{
-			sipPortTestResult = 'Ports closed/used by other application.';
-		}
-
-		if( typeof( rtptest ) != 'undefined' ){
-			var allPortsOpened = true;
-			console.log('looping result....');
-			$.each(rtptest, function(i,e){
-				if( allPortsOpened ){
-					if( e.a.rcv === true && e.a.send === true && e.v.rcv === true && e.v.send === true ){
-						// do nothing
-					}else{
-						allPortsOpened = false;
-					}
-				}
-			});
-
-			if( allPortsOpened ){
-				rtpPortTestResult = 'Ports are opened.';
-			}else{
-				rtpPortTestResult = 'Ports closed/used by other application.';
-			}
-		}else{
-			rtpPortTestResult = 'Ports closed/used by other application.';
-		}
-
-		console.log( $('.tab-result.selected').length );
-		console.log( $('.tab-result.selected') );
-
-		// --- populate tooltip content
-		$.appendResultTooltip( $('.tab-result.selected'), {
-			sipResult: sipPortTestResult,
-			rtpResult: rtpPortTestResult,
-			rtpStart: currRTPStart,
-			rtpEnd: currRTPEnd,
-		});
-		// --------------
+		
 	}
 });
 

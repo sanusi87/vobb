@@ -515,7 +515,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				vobb.udp.command.file,
 				'port='+param.port,
 				'address='+vobb.ip.private
-			], { stdio: [ 1, 'pipe' ] });
+			], { stdio: [ 0, 'pipe' ] });
 
 			// when all servers has been initialized
 			spawn.on('close', function(code){
@@ -524,7 +524,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 				console.log('child process 4 exit? code='+code);
 			}).on('error', function(code){
 				console.log('child process 4 error? code='+code);
-
+				console.log( vobb.udp.command.process );
+				console.log( vobb.udp.command.file + ' - '+vobb.ip.private+' - '+param.port );
 				message.code = 0;
 				message.text = 'Failed to prepare UDP servers!';
 				socket.emit("udp_server_prepared", message);
@@ -562,6 +563,33 @@ loadingCodec.on('codec_load_success', function(codecs){
 				}
 			});
 
+			var replied = false,
+			waitTimer = 0;
+
+			/*
+			// if no reply from client applet, for the desinated interval, then send error----------------------------------
+			//-------------------- 3000ms = 3s
+			var autoReplyIntv = setInterval(function(){
+				if( !replied ){
+					if( waitTimer > 2500 ){
+						clearInterval( autoReplyIntv );
+						replied = true;
+
+						message.code = 0;
+						message.rcv = false;
+						message.text = 'Timeout while waiting for packet!';
+						socket.emit("udp_packet_sent", message);
+						ssp.kill();
+					}
+				}else{
+					clearInterval( autoReplyIntv );
+					ssp.kill();
+				}
+				waitTimer += 10;
+			}, 30);
+			//--------------------
+			*/
+			
 			spawn.stderr.on('data', function(err){
 				console.log('stderr. code='+err);
 
@@ -590,10 +618,10 @@ loadingCodec.on('codec_load_success', function(codecs){
 				vobb.udp.client.file,
 				'port='+param.port,
 				'address='+param.address
-			], { stdio: [ 1, 'pipe' ] });
-			console.log(vobb.udp.client.process);
-			console.log(vobb.udp.client.file);
-			console.log(param.address+':'+param.port);
+			], { stdio: [ 0, 'pipe' ] });
+			// console.log(vobb.udp.client.process);
+			// console.log(vobb.udp.client.file);
+			// console.log(param.address+':'+param.port);
 
 			// when all servers has been initialized
 			ssp.on('close', function(code){
@@ -614,9 +642,10 @@ loadingCodec.on('codec_load_success', function(codecs){
 			waitTimer = 0;
 
 			// if received a REPLY from applet
-			// ssp.stdout.on('data', function(data){
+			ssp.stdout.on('data', function(data){
 				// console.log('receiving from child proc 5...');
-				// console.log('-->'+data.toString());
+				console.log('-->'+data.toString());
+				console.log( /^packet.sent/g.test( data.toString() ) );
 				// message.rcv = true;
 				// message.send = true;
 
@@ -625,13 +654,19 @@ loadingCodec.on('codec_load_success', function(codecs){
 				// console.log(someData);
 				// console.log(/APLT/ig.test(someData));
 
-				// if( /APLT/ig.test(someData) ){
-					// message.code = 1;
-					// message.text = someData;
+				if( /^packet.sent/g.test( data.toString() ) ){
+					message.send = true;
+					message.text = data.toString();
+					socket.emit("udp_packet_sent", message);
+				}
+
+				//if( /APLT/ig.test(someData) ){
+					//message.code = 1;
+					//message.text = someData;
 					// replied = true;
-					// socket.emit("udp_packet_sent", message);
-				// }
-			// });
+					//socket.emit("udp_packet_sent", message);
+				//}
+			});
 
 			// if no reply from client applet, for the desinated interval, then send error----------------------------------
 			//-------------------- 3000ms = 3s
