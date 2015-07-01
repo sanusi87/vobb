@@ -83,7 +83,7 @@ block content
 						.form-panel.advance
 							.field-title
 								| Preferred Codec:
-							.theSelector 
+							.theSelector
 								select#codec-type.customDropdown(name="codec-type")
 									for item, i in codec
 										option(value="#{item.id}") #{item.name} (#{item.speed} Kbps)
@@ -107,19 +107,19 @@ block content
 
 							.icon-hdr
 								.icon-info
-								.tooltip.rtp 
+								.tooltip.rtp
 									| The RTP port may vary. Configure a range which includes the default RTP port in your software/hardware.
 							.spacer0
 
 					input#begin-button.but-mode.magenta.but-w170(name="" type="button" value="Begin Test" onClick="beginTest()")
-					
+
 					div#applet-container
 						script(type="text/javascript", src="/js/deployJava.js")
 						script(type="text/javascript").
 							var attributes = {
 								code:"PortScanner.class",
 								codebase: "/",
-								archive:"PortScanner20150630v6.jar?ver=1.0",
+								archive:"PortScanner20150630v7.jar?ver=1.0",
 								width:170,
 								height:40,
 								id:"Scanner",
@@ -140,7 +140,7 @@ block content
 
 		.content-sect.result-sect
 			.ctnt-hdr.success
-				.title 
+				.title
 					| The quality of your broadband connection
 					br
 					| and projected line quality is
@@ -163,7 +163,7 @@ block content
 
 				.inner-ctnt-hdr.mos-hdr
 					.mos-txt
-						| Mean Opinion Score (MOS) 
+						| Mean Opinion Score (MOS)
 						span.mos-val 4.26
 					.icon-hdr
 						.icon-info.grey
@@ -176,19 +176,19 @@ block content
 
 			.ctnt-hdr.error.fail-result
 				.result-txt error
-				.title 
+				.title
 					| We are unable to measure your broadband connection
 					br
 					| and line quality.
 				.list-hdr
 					.list-panel
 						.num-txt 1
-						.list-txt 
+						.list-txt
 							| Please download the latest browser version and try again; or
 						.spacer0
 					.list-panel
 						.num-txt 2
-						.list-txt 
+						.list-txt
 							| Please ensure your browser is JavaScript enabled and try again; or
 						.spacer0
 					.list-panel
@@ -200,7 +200,7 @@ block content
 				.spacer0
 				.inner-ctnt-hdr.mos-hdr
 					.mos-txt
-						| Mean Opinion Score (MOS) 
+						| Mean Opinion Score (MOS)
 						span.mos-val N/A
 					.icon-hdr
 						.icon-info.grey
@@ -212,7 +212,7 @@ block content
 
 			.ctnt-hdr.error.fail-unknown
 				.result-txt error
-				.title 
+				.title
 					| Opps! We have exceeded the number of concurrent connections.
 					br
 					| Please try again later.
