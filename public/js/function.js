@@ -1604,18 +1604,26 @@ function udpServerCreated( port, createStatus, listenStatus ){
 
 	//rtptest[port].v.send = true;
 
-	// if( createStatus ){
+	if( createStatus ){
 		// if( listenStatus ){
 			// rtptest[port].a.rcv = true;
 		// }else{
 			// rtptest[port].a.rcv = false;
 		// }
-	// }else{
+	}else{
+		if( typeof( rtptest[port] ) != 'undefined' ){
+			// if packet has been received
+			if( rtptest[port].a.rcv == true || vobbReceivedPacket ){
+				
+			}else{
+				updateAppletReceiveStatus(port, false);
+			}
+		}
 		// failed to create UDP server for this port, so there is no need to test for the port
 		// rtptest[port].a.rcv = false;
 		//rtptest[port].v.send = true; // set by setPortStatus(), returned by applet
 		//updateAppletReceiveStatus(port, false);
-	// }
+	}
 
 	// applet: test sending a packet to vobb server
  	// console.log('applet: sending packet to vobb:'+ port);
@@ -1725,9 +1733,9 @@ function startCount( resp ){
 	if( startingRTP < currRTPEnd ){
 		startingRTP++;
 
-		// setTimeout(function(){
+		setTimeout(function(){
 			checkUDPPort( startingRTP );
-		// }, 1000);
+		}, 1000);
 
 	}else{
 		console.log('olright');
