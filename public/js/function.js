@@ -187,6 +187,7 @@ socket.on("checked_address", function(data){
 	if( data.status == "same" ){
 		fulltest = true;
 		Scanner.fulltest = true;
+		Scanner.serverCreateTimeout = 4000;
 	}
 });
 //////////////////////////
@@ -1619,6 +1620,8 @@ function udpServerCreated( port, createStatus, listenStatus ){
 				// updateAppletReceiveStatus(port, false);
 			// }
 		// }
+		
+		// if applet failed to create packet, asking for vobb to send is a wasted, as applet will not receive it
 		updateAppletReceiveStatus(port, false);
 		// failed to create UDP server for this port, so there is no need to test for the port
 		// rtptest[port].a.rcv = false;
