@@ -1611,14 +1611,15 @@ function udpServerCreated( port, createStatus, listenStatus ){
 			// rtptest[port].a.rcv = false;
 		// }
 	}else{
-		if( typeof( rtptest[port] ) != 'undefined' ){
+		// if( typeof( rtptest[port] ) != 'undefined' ){
 			// if packet has been received
-			if( rtptest[port].a.rcv == true || vobbReceivedPacket ){
+			// if( rtptest[port].a.rcv == true || vobbReceivedPacket ){
 				
-			}else{
-				updateAppletReceiveStatus(port, false);
-			}
-		}
+			// }else{
+				// updateAppletReceiveStatus(port, false);
+			// }
+		// }
+		updateAppletReceiveStatus(port, false);
 		// failed to create UDP server for this port, so there is no need to test for the port
 		// rtptest[port].a.rcv = false;
 		//rtptest[port].v.send = true; // set by setPortStatus(), returned by applet
