@@ -1604,18 +1604,18 @@ function udpServerCreated( port, createStatus, listenStatus ){
 
 	//rtptest[port].v.send = true;
 
-	if( createStatus ){
-		if( listenStatus ){
-			rtptest[port].a.rcv = true;
-		}else{
-			rtptest[port].a.rcv = false;
-		}
-	}else{
+	// if( createStatus ){
+		// if( listenStatus ){
+			// rtptest[port].a.rcv = true;
+		// }else{
+			// rtptest[port].a.rcv = false;
+		// }
+	// }else{
 		// failed to create UDP server for this port, so there is no need to test for the port
-		rtptest[port].a.rcv = false;
+		// rtptest[port].a.rcv = false;
 		//rtptest[port].v.send = true; // set by setPortStatus(), returned by applet
-
-	}
+		//updateAppletReceiveStatus(port, false);
+	// }
 
 	// applet: test sending a packet to vobb server
  	// console.log('applet: sending packet to vobb:'+ port);
