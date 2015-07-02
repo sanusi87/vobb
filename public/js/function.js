@@ -1650,7 +1650,7 @@ socket.on("udp_packet_sent", function(resp){
 	var waitTimer = 0;
 	var autoReplyIntv = setInterval(function(){
 		if( !vobbReceivedPacket ){
-			if( waitTimer > 2000 ){
+			if( waitTimer > 1000 ){
 				clearInterval( autoReplyIntv );
 				vobbReceivedPacket = true;
 				updateVobbReceiveStatus(resp.port, false); // no packet received
