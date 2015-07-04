@@ -924,7 +924,7 @@ function showEndResult(){
 			
 			// --- populate tooltip content
 			if( $('.tab-result.selected').length == 1 ){
-				endResultStat = 'done';
+				endResultStat = '';
 				barSect.hide();
 				stopMoveFlame();
 				theFlame.hide();
