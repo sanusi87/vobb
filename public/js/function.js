@@ -1620,6 +1620,7 @@ function udpServerCreated( port, createStatus, listenStatus ){
 	//rtptest[port].v.send = true;
 
 	if( createStatus ){
+		udpServerRequestTest( port );
 		// if( listenStatus ){
 			// rtptest[port].a.rcv = true;
 		// }else{
@@ -1650,7 +1651,7 @@ function udpServerCreated( port, createStatus, listenStatus ){
 
 // vobb: received from applet
 socket.on("udp_packet_sent", function(resp){
-	console.log('vobb: UDP packetsent??');
+	console.log('vobb: UDP packet sent??');
 	console.log(resp.text);
 
 	updateVobbSendStatus( resp.port, resp.send );
