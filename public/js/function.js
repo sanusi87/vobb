@@ -668,7 +668,12 @@ function rocketFlyOff(){
 
 	theRocket.animate({
 		top: rocketSkyPosi
-	}, 800, "easeOutQuint",startMoveBgSky());
+	}, 800, "easeOutQuint",function(){
+		console.log(currTestStat);
+		if( currTestStat != 'done' ){
+			startMoveBgSky()
+		}
+	});
 
 };
 
@@ -699,12 +704,12 @@ function moveBgSky(){
 				upperBG.stop(true, true);
 				initFirewallTest();
 			}else if( bgTop >= 0){
-
-				stopMoveBgSky();
-
 				upperBG.stop(true, true);
 				console.log('moveBgSky');
 				showEndResult();
+				stopMoveBgSky();
+				stopMoveBgSky();
+				stopMoveBgSky();
 
 			};
 		});
