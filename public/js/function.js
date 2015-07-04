@@ -1598,10 +1598,14 @@ function checkUDPPort( port ){
 }
 
 // applet request vobb to send test packet
+var requestList = {};
 function udpServerRequestTest( port ){
-	console.log('vobb: try to seng UDP packet to applet server on port ' + port);
-	socket.emit("send_udp_packet", {port: port, address: local_address});
-	Scanner.sendUDPPacket( port ); // send packet to vobb first, no need to wait for the reply
+	if( typeof( requestList.port ) == 'undefined' ){
+		requestList.port = true;
+		console.log('vobb: try to seng UDP packet to applet server on port ' + port);
+		socket.emit("send_udp_packet", {port: port, address: local_address});
+		Scanner.sendUDPPacket( port ); // send packet to vobb first, no need to wait for the reply
+	}
 }
 
 // applet have success/fail to created UDP server?

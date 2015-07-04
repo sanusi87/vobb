@@ -639,7 +639,6 @@ loadingCodec.on('codec_load_success', function(codecs){
 			// if received a REPLY from applet
 			ssp.stdout.on('data', function(data){
 				// console.log('receiving from child proc 5...');
-				console.log('received reply on '+param.port+' --> '+data.toString());
 				// console.log( /^packet.sent/g.test( data.toString() ) );
 				// message.rcv = true;
 				// message.send = true;
@@ -649,6 +648,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				// console.log(someData);
 				// console.log(/APLT/ig.test(someData));
 
+				console.log('received data on '+param.port+' --> '+data.toString());
 				if( /^packet.sent/g.test( data.toString() ) ){
 					message.send = true;
 					message.text = data.toString();
