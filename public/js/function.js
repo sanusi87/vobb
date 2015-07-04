@@ -1661,6 +1661,10 @@ socket.on("udp_packet_sent", function(resp){
 	// we should wait for the packet to arrive before begin counting
 	var waitTimer = 0;
 	var autoReplyIntv = setInterval(function(){
+		console.log('--check type');
+		console.log( typeof( rtptest[resp.port] ) );
+		console.log('--check result');
+		console.log(rtptest[resp.port].v.rcv);
 		if( typeof( rtptest[resp.port] ) != 'undefined' && rtptest[resp.port].v.rcv == false ){
 			if( waitTimer > 1000 ){
 				clearInterval( autoReplyIntv );
