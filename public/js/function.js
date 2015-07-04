@@ -1600,6 +1600,7 @@ function checkUDPPort( port ){
 // applet request vobb to send test packet
 var requestList = {};
 function udpServerRequestTest( port ){
+	console.log( requestList );
 	if( typeof( requestList.port ) == 'undefined' ){
 		requestList.port = true;
 		console.log('vobb: try to seng UDP packet to applet server on port ' + port);
