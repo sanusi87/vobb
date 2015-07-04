@@ -683,14 +683,10 @@ function stopMoveBgSky(){
 };
 
 function moveBgSky(){
-
-
 	upperBG.animate({
 		top: "+=50"
-		}, 50, "linear", function() {
-
+		}, 50, "linear", function(){
 			bgTop =  upperBG.position().top;
-
 			if(bgTop >= -(skyMidPartOffset.top + 20) && currTestStat != "done"){
 
 				stopMoveBgSky();
@@ -701,6 +697,7 @@ function moveBgSky(){
 			}else if( bgTop >= 0){
 				upperBG.stop(true, true);
 				stopMoveBgSky();
+				console.log(currTestStat);
 				console.log('moveBgSky');
 				showEndResult();
 			};
@@ -825,9 +822,9 @@ function nextFirewallTest(){
 	if( currFirewall == 2 || fulltest == false ){
 		currTestStat = "done";
 
-		// startMoveBgSky();
+		startMoveBgSky();
 		// stopMoveBgSky();
-		moveBgSky();
+		// moveBgSky();
 
 		stopRptSky();
 
@@ -927,6 +924,7 @@ function showEndResult(){
 			
 			// --- populate tooltip content
 			if( $('.tab-result.selected').length == 1 ){
+				endResultStat = 'done';
 				barSect.hide();
 				stopMoveFlame();
 				theFlame.hide();
