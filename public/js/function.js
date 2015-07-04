@@ -467,8 +467,6 @@ function beginTest(){
 	if(endResultStat == "fail-unknown"){
 
 		showFailEndScene();
-		//showEndResult();
-
 	}else{
 
 		runQualityTest();
@@ -705,7 +703,7 @@ function moveBgSky(){
 				stopMoveBgSky();
 
 				upperBG.stop(true, true);
-
+				console.log('moveBgSky');
 				showEndResult();
 
 			};
@@ -869,6 +867,7 @@ function showFailEndScene(){
 	upperBG.animate({
 		top: 0
 		}, 500, "easeOutQuint", function() {
+			console.log('showFailEndScene');
 			showEndResult();
 	});
 
@@ -929,6 +928,11 @@ function showEndResult(){
 			
 			// --- populate tooltip content
 			if( $('.tab-result.selected').length == 1 ){
+				barSect.hide();
+				stopMoveFlame();
+				theFlame.hide();
+				rocketStopMove();
+				
 				console.log('start...');
 				var sipPortTestResult = '',
 				rtpPortTestResult = '';
