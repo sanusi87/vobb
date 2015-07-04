@@ -795,7 +795,6 @@ function moveFirewallBarIn(){
 		top: barTopPosi
 		}, 300, "easeOutQuint",function(){
 			barSect.stop(true,true);
-
 			startFirewallTest();
 	});
 };
@@ -819,9 +818,11 @@ function nextFirewallTest(){
 	resetFirewallTest();
 
 	// this line finished firewall test and returned the END RESULT screen
+	console.log( currFirewall );
+	console.log( fulltest );
 	if( currFirewall == 2 || fulltest == false ){
 		currTestStat = "done";
-
+		
 		startMoveBgSky();
 		// stopMoveBgSky();
 		// moveBgSky();
@@ -924,7 +925,6 @@ function showEndResult(){
 			
 			// --- populate tooltip content
 			if( $('.tab-result.selected').length == 1 ){
-				endResultStat = '';
 				barSect.hide();
 				stopMoveFlame();
 				theFlame.hide();
@@ -1681,7 +1681,7 @@ socket.on("udp_packet_sent", function(resp){
 			clearInterval( autoReplyIntv );
 			startCount( resp );
 		}
-		waitTimer += 10;
+		waitTimer += 100;
 	}, 30);
 });
 
