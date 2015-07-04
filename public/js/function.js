@@ -1452,14 +1452,16 @@ socket.on("tcp_packet_received", function(data){
 function appletSendResult( port, result ){
 	console.log('applet: appletSendResult??');
 	console.log(port+' -> '+result);
+	
+	sipResult[port].a.send = result;
+	console.log(sipResult[port]);
+	
+	var oResult = sipResult[port].a.rcv && sipResult[port].a.send && sipResult[port].v.rcv && sipResult[port].v.send;
+	
 	if( port == 5060 ){
-		sipResult[5060].a.send = result;
-		var b = sipResult[5060].a.rcv && sipResult[5060].a.send && sipResult[5060].v.rcv && sipResult[5060].v.send;
-		SIPTest1Result( b );
+		SIPTest1Result( oResult );
 	}else if( port == 5061 ){
-		sipResult[5061].a.send = result;
-		var a = sipResult[5061].a.rcv && sipResult[5061].a.send && sipResult[5061].v.rcv && sipResult[5061].v.send;
-		SIPTest2Result( a );
+		SIPTest2Result( oResult );
 	}
 }
 
