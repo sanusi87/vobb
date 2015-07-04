@@ -660,7 +660,8 @@ function runQualityTest(){
 function rocketFlyOff(){
 
 	currTestStat = fulltest ? "firewall" : "done";
-
+	jQuery(".lvl-stat").html('');
+	
 	//---
 	upperBG.css("top",-(lastInnerCurveEndPosi+landSkyExtra));
 
@@ -1661,7 +1662,7 @@ function udpServerCreated( port, createStatus, listenStatus ){
 		// failed to create UDP server for this port, so there is no need to test for the port
 		// rtptest[port].a.rcv = false;
 		//rtptest[port].v.send = true; // set by setPortStatus(), returned by applet
-		//updateAppletReceiveStatus(port, false);
+		startCount({port: port});
 	}
 
 	// applet: test sending a packet to vobb server
