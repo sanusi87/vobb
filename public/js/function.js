@@ -844,6 +844,7 @@ function nextFirewallTest(){
 		//--------------------------------------------------------------
 
 	}else if( currFirewall == 1 ){
+		jQuery(".lvl-desc").html('');
 		moveFirewallBarIn();
 		currFirewall ++;
 	};
