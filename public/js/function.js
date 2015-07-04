@@ -1590,7 +1590,7 @@ function checkUDPPort( port ){
 
 // applet request vobb to send test packet
 function udpServerRequestTest( port ){
-	console.log('vobb: try to seng UDP packet to applet server on port ' + port);
+	console.log('vobb: try to send UDP packet to applet server on port ' + port);
 	socket.emit("send_udp_packet", {port: port, address: local_address});
 }
 
@@ -1615,12 +1615,12 @@ function udpServerCreated( port, createStatus, listenStatus ){
 		// if( typeof( rtptest[port] ) != 'undefined' ){
 			// if packet has been received
 			// if( rtptest[port].a.rcv == true || vobbReceivedPacket ){
-				
+
 			// }else{
 				// updateAppletReceiveStatus(port, false);
 			// }
 		// }
-		
+
 		// if applet failed to create packet, asking for vobb to send is a wasted, as applet will not receive it
 		updateAppletReceiveStatus(port, false);
 		// failed to create UDP server for this port, so there is no need to test for the port
@@ -1649,7 +1649,7 @@ socket.on("udp_packet_sent", function(resp){
 		//console.log('applet: sending packet to vobb:'+ resp.port);
 		//Scanner.beginRTPPortTest( resp.port );
 	//}
-	
+
 	// we should wait for the packet to arrive before begin counting
 	var waitTimer = 0;
 	var autoReplyIntv = setInterval(function(){
