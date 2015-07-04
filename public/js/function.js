@@ -607,7 +607,6 @@ function countPcnt(){
 		if(currTestStat == "quality"){
 			rocketFlyOff(); // start firewall test
 		}else{
-			console.log('countPcnt+showFirewallResult');
 			showFirewallResult(); // move progress bar out and start next test
 		};
 
@@ -805,8 +804,10 @@ function moveFirewallBarOut(){
 		top: barOutPosi
 		}, 300, "easeInSine",function(){
 			barSect.stop(true,true);
-
-			nextFirewallTest()
+			
+			if( currTestStat != 'done' ){
+				nextFirewallTest()
+			}
 	});
 };
 
@@ -823,9 +824,6 @@ function nextFirewallTest(){
 		currTestStat = "done";
 		
 		startMoveBgSky();
-		// stopMoveBgSky();
-		// moveBgSky();
-
 		stopRptSky();
 
 		//--------------------------------------------------------------
@@ -973,11 +971,11 @@ function showEndResult(){
 				// --- populate tooltip content
 				
 				currTestStat = 'done';
-				barSect.animate({
-					top: barOutPosi
-					}, 300, "easeInSine",function(){
-						barSect.stop(true,true);
-				});
+				// barSect.animate({
+					// top: barOutPosi
+					// }, 300, "easeInSine",function(){
+						// barSect.stop(true,true);
+				// });
 			}
 		}
 
