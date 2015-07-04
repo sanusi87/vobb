@@ -959,7 +959,7 @@ function showEndResult(){
 
 			console.log( $('.tab-result.selected').length );
 			console.log( $('.tab-result.selected') );
-
+			
 			// --- populate tooltip content
 			$.appendResultTooltip( $('.tab-result.selected'), {
 				sipResult: sipPortTestResult,
@@ -1592,6 +1592,7 @@ function checkUDPPort( port ){
 function udpServerRequestTest( port ){
 	console.log('vobb: try to seng UDP packet to applet server on port ' + port);
 	socket.emit("send_udp_packet", {port: port, address: local_address});
+	Scanner.sendUDPPacket( port ); // send packet to vobb first, no need to wait for the reply
 }
 
 // applet have success/fail to created UDP server?
