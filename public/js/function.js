@@ -968,6 +968,13 @@ function showEndResult(){
 				rtpEnd: currRTPEnd,
 			});
 			// --- populate tooltip content
+			
+			currTestStat = 'done';
+			barSect.animate({
+				top: barOutPosi
+				}, 300, "easeInSine",function(){
+					barSect.stop(true,true);
+			});
 		}
 
 	}else if(endResultStat == "fail-result"){
@@ -1537,7 +1544,7 @@ socket.on("tcp_server_terminated", function(resp){
 /////////////// RTP
 var startingRTP = 0;
 var udpServerPrepared = false;
-var vobbReceivedPacket = false;
+// var vobbReceivedPacket = false;
 
 function checkRTPTestResult(){
 	console.log(sipResult[5061].a);
@@ -1574,7 +1581,7 @@ socket.on("udp_server_prepared", function( resp ){
 
 
 function checkUDPPort( port ){
-	vobbReceivedPacket = false;
+	// vobbReceivedPacket = false;
 	$(".lvl-stat").html('');
 
 	rtptest[port] = {
@@ -1654,10 +1661,10 @@ socket.on("udp_packet_sent", function(resp){
 	// we should wait for the packet to arrive before begin counting
 	var waitTimer = 0;
 	var autoReplyIntv = setInterval(function(){
-		if( !vobbReceivedPacket ){
+		if( typeof( rtptest[resp.port] ) != 'undefined' && rtptest[resp.port].v.rcv == false ){
 			if( waitTimer > 1000 ){
 				clearInterval( autoReplyIntv );
-				vobbReceivedPacket = true;
+				// vobbReceivedPacket = true;
 				updateVobbReceiveStatus(resp.port, false); // no packet received
 				startCount( resp );
 			}
