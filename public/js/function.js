@@ -276,7 +276,7 @@ function resetApp(){
 	SIP5061Received = false;
 	$('.tab-result.selected').removeClass('selected');
 	requestList = {};
-	Scanner.closePort();
+	// Scanner.closePort();
 	
 	theFormCtnt.show();
 
