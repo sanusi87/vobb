@@ -1692,19 +1692,26 @@ socket.on("udp_packet_sent", function(resp){
 		console.log( typeof( rtptest[resp.port] ) );
 		console.log('--check result');
 		console.log(rtptest[resp.port].v.rcv);
-		if( typeof( rtptest[resp.port] ) != 'undefined' && rtptest[resp.port].v.rcv === false ){
-			if( waitTimer > 1000 ){
+		
+		if( typeof( rtptest[resp.port] ) != 'undefined' ){
+			if( rtptest[resp.port].v.rcv === false ){
 				clearInterval( autoReplyIntv );
 				// vobbReceivedPacket = true;
 				updateVobbReceiveStatus(resp.port, false); // no packet received
 				console.log( 'waitTimer > 1000' );
 				startCount( resp );
+			}else if( rtptest[resp.port].v.rcv === true ){
+				console.log('--received--');
+				clearInterval( autoReplyIntv );
+				startCount( resp );
+			}else{
+				if( waitTimer > 1000 ){
+					clearInterval( autoReplyIntv );
+					startCount( resp );
+				}
 			}
-		}else if( rtptest[resp.port].v.rcv === true ){
-			console.log('--received--');
-			clearInterval( autoReplyIntv );
-			startCount( resp );
 		}
+		
 		waitTimer += 100;
 	}, 30);
 });
