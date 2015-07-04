@@ -276,6 +276,7 @@ function resetApp(){
 	SIP5061Received = false;
 	$('.tab-result.selected').removeClass('selected');
 	requestList = {};
+	Scanner.closePort();
 	
 	theFormCtnt.show();
 
@@ -1620,7 +1621,7 @@ function checkUDPPort( port ){
 
 // applet request vobb to send test packet
 function udpServerRequestTest( port ){
-	console.log( requestList );
+	// console.log( requestList );
 	if( typeof( requestList[port] ) == 'undefined' ){
 		requestList[port] = true;
 		console.log('vobb: try to seng UDP packet to applet server on port ' + port);
@@ -1642,26 +1643,12 @@ function udpServerCreated( port, createStatus, listenStatus ){
 
 	if( createStatus ){
 		udpServerRequestTest( port );
-		// if( listenStatus ){
-			// rtptest[port].a.rcv = true;
-		// }else{
-			// rtptest[port].a.rcv = false;
-		// }
 	}else{
-		// if( typeof( rtptest[port] ) != 'undefined' ){
-			// if packet has been received
-			// if( rtptest[port].a.rcv == true || vobbReceivedPacket ){
-				
-			// }else{
-				// updateAppletReceiveStatus(port, false);
-			// }
-		// }
-		
 		// if applet failed to create packet, asking for vobb to send is a wasted, as applet will not receive it
 		updateAppletReceiveStatus(port, false);
 		// failed to create UDP server for this port, so there is no need to test for the port
-		// rtptest[port].a.rcv = false;
-		//rtptest[port].v.send = true; // set by setPortStatus(), returned by applet
+		
+		console.log('run countPcnt()');
 		startCount({port: port});
 	}
 
