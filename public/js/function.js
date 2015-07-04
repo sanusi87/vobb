@@ -906,7 +906,7 @@ function showEndResult(){
 		}
 
 		$(".ctnt-hdr.success .result-txt").html(tempResultClass);
-		$(".ctnt-hdr.success .mos-val").html(successMOSVal);
+		$(".ctnt-hdr.success .mos-val").html('&nbsp;'+successMOSVal);
 		$(".ctnt-hdr.success").children('.desc').html( '('+resultSet[successResultClass].desc+')' );
 
 		if( !fulltest ){
@@ -1667,14 +1667,16 @@ socket.on("udp_packet_sent", function(resp){
 		console.log( typeof( rtptest[resp.port] ) );
 		console.log('--check result');
 		console.log(rtptest[resp.port].v.rcv);
-		if( typeof( rtptest[resp.port] ) != 'undefined' && rtptest[resp.port].v.rcv == false ){
+		if( typeof( rtptest[resp.port] ) != 'undefined' && rtptest[resp.port].v.rcv === false ){
 			if( waitTimer > 1000 ){
 				clearInterval( autoReplyIntv );
 				// vobbReceivedPacket = true;
 				updateVobbReceiveStatus(resp.port, false); // no packet received
+				console.log( 'waitTimer > 1000' );
 				startCount( resp );
 			}
 		}else{
+			console.log('--received--');
 			clearInterval( autoReplyIntv );
 			startCount( resp );
 		}
