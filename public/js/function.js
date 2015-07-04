@@ -607,6 +607,7 @@ function countPcnt(){
 		if(currTestStat == "quality"){
 			rocketFlyOff(); // start firewall test
 		}else{
+			console.log('countPcnt+showFirewallResult');
 			showFirewallResult(); // move progress bar out and start next test
 		};
 
@@ -818,8 +819,6 @@ function nextFirewallTest(){
 	resetFirewallTest();
 
 	// this line finished firewall test and returned the END RESULT screen
-	console.log( currFirewall );
-	console.log( fulltest );
 	if( currFirewall == 2 || fulltest == false ){
 		currTestStat = "done";
 		
