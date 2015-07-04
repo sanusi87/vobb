@@ -649,7 +649,7 @@ function runQualityTest(){
 	theRocket.animate({
 		top: rocketTakeOffPosi
 	}, 800, "easeOutQuint", function(){
-
+		jQuery(".lvl-stat").html('');
 		rocketOriY = rocketTakeOffPosi;
 		rocketMove();
 		showRocketBubble()
@@ -659,10 +659,7 @@ function runQualityTest(){
 //---------------rocket flying off-------------------------------//
 
 function rocketFlyOff(){
-
 	currTestStat = fulltest ? "firewall" : "done";
-	jQuery(".lvl-stat").html('');
-	
 	//---
 	upperBG.css("top",-(lastInnerCurveEndPosi+landSkyExtra));
 
