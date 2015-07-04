@@ -166,6 +166,7 @@ jQuery(function($){
 //////////////////////////
 var fulltest = false;
 var local_address;
+var requestList = {};
 var interval = setInterval(function(){
 	//console.log( local_address );
 	if( typeof( local_address ) !== 'undefined' ){
@@ -274,7 +275,8 @@ function resetApp(){
 	SIP5060Received = false;
 	SIP5061Received = false;
 	$('.tab-result.selected').removeClass('selected');
-
+	requestList = {};
+	
 	theFormCtnt.show();
 
 	landSky.hide();
@@ -1083,48 +1085,32 @@ var currFormNum;
 var currForm;
 
 function initTestForm(){
-
 	currCodec = $( '#codec-type' ).val();
 	if($(".select-tab-hdr .select-tab").length > 0){
-
 		currFormNum = 0;
-
 		var theTab = $(".select-tab-hdr .select-tab");
-
 		theTab.click(function(){
-
 			currFormNum = theTab.index(this);
-
 			showTextForm(currFormNum);
-
 		})
-
 		showTextForm(currFormNum);
 	};
-
 };
 
 function showTextForm(n){
-
 	currFormNum = n;
-
 	var theTab = $(".select-tab-hdr .select-tab");
 	//var theForm = $(".form-hdr");
-
 	theTab.removeClass("selected");
 	//theForm.hide();
-
 	theTab.eq(currFormNum).addClass("selected");
 	//theForm.eq(currFormNum).show();
-
 	if(currFormNum == 0){
 		showFormBasic();
 	}else{
 		showFormAdvance();
 	};
-
 	hideErrorPort();
-
 	hideTooltip();
 };
 
@@ -1390,6 +1376,22 @@ function sipServerCreated( port, status ){
 socket.on("tcp_packet_sent", function(data){
 	console.log('vobb: tcp_packet_sent??');
 	console.log(data);
+	
+	if( data.rcv ){
+		sipResult[data.port].a.rcv = data.rcv;
+	}
+	
+	if( data.send ){
+		sipResult[data.port].v.send = data.send;
+	}
+	
+	if( !data.rcv && !data.send ){
+		Scanner.closePort0();
+		appletSendResult(data.port, false);
+	}
+	console.log( sipResult[data.port] );
+	
+	/*
 	// vobb server automatically send STOP signal to stop applet server(5060) from listening
 	if( data.port == 5060 ){
 		if( data.rcv ){
@@ -1425,8 +1427,8 @@ socket.on("tcp_packet_sent", function(data){
 			Scanner.closePort1();
 			appletSendResult(5061, false);
 		}
-
 	}
+	*/
 });
 
 // returned by vobb while "socket.on(tcp_packet_sent") is running
@@ -1474,7 +1476,7 @@ function SIPTest1Result( result ){
 		$(".bar-sect .bar-hdr").addClass("fail");
 	}else{
 		firewallResult = "pass";
-		firewallResultText = "pass!";
+		firewallResultText = "passed!";
 		$(".bar-sect .bar-hdr").removeClass("fail");
 	}
 
@@ -1514,7 +1516,7 @@ function SIPTest2Result( result ){
 		$(".bar-sect .bar-hdr").addClass("fail");
 	}else{
 		firewallResult = "pass";
-		firewallResultText = "pass!";
+		firewallResultText = "passed!";
 		$(".bar-sect .bar-hdr").removeClass("fail");
 	}
 
@@ -1598,7 +1600,6 @@ function checkUDPPort( port ){
 }
 
 // applet request vobb to send test packet
-var requestList = {};
 function udpServerRequestTest( port ){
 	console.log( requestList );
 	if( typeof( requestList[port] ) == 'undefined' ){
@@ -1744,7 +1745,7 @@ function startCount( resp ){
 	// if applet failed to send and receive
 	if( rtptest[resp.port].a.send == true && rtptest[resp.port].a.rcv == true && rtptest[resp.port].v.send == true && rtptest[resp.port].v.rcv == true ){
 		firewallResult = "pass";
-		response = "pass!";
+		response = "passed!";
 		jQuery(".bar-sect .bar-hdr").removeClass("fail");
 	}else{
 		firewallResult = "fail";
