@@ -166,6 +166,7 @@ jQuery(function($){
 //////////////////////////
 var fulltest = false;
 var local_address;
+var requestList = {};
 var interval = setInterval(function(){
 	//console.log( local_address );
 	if( typeof( local_address ) !== 'undefined' ){
@@ -187,7 +188,7 @@ socket.on("checked_address", function(data){
 	if( data.status == "same" ){
 		fulltest = true;
 		Scanner.fulltest = true;
-		Scanner.serverCreateTimeout = 4000;
+		//Scanner.serverCreateTimeout = 4000;
 	}
 });
 //////////////////////////
@@ -273,7 +274,10 @@ function resetApp(){
 
 	SIP5060Received = false;
 	SIP5061Received = false;
-
+	$('.tab-result.selected').removeClass('selected');
+	requestList = {};
+	// Scanner.closePort();
+	
 	theFormCtnt.show();
 
 	landSky.hide();
@@ -466,10 +470,10 @@ function beginTest(){
 	if(endResultStat == "fail-unknown"){
 
 		showFailEndScene();
-		//showEndResult();
-
 	}else{
-
+		jQuery(".lvl-stat").html('');
+		jQuery(".lvl-desc").html('');
+		
 		runQualityTest();
 	};
 
@@ -647,7 +651,6 @@ function runQualityTest(){
 	theRocket.animate({
 		top: rocketTakeOffPosi
 	}, 800, "easeOutQuint", function(){
-
 		rocketOriY = rocketTakeOffPosi;
 		rocketMove();
 		showRocketBubble()
@@ -657,9 +660,7 @@ function runQualityTest(){
 //---------------rocket flying off-------------------------------//
 
 function rocketFlyOff(){
-
 	currTestStat = fulltest ? "firewall" : "done";
-
 	//---
 	upperBG.css("top",-(lastInnerCurveEndPosi+landSkyExtra));
 
@@ -684,14 +685,10 @@ function stopMoveBgSky(){
 };
 
 function moveBgSky(){
-
-
 	upperBG.animate({
 		top: "+=50"
-		}, 50, "linear", function() {
-
+		}, 50, "linear", function(){
 			bgTop =  upperBG.position().top;
-
 			if(bgTop >= -(skyMidPartOffset.top + 20) && currTestStat != "done"){
 
 				stopMoveBgSky();
@@ -700,13 +697,11 @@ function moveBgSky(){
 				upperBG.stop(true, true);
 				initFirewallTest();
 			}else if( bgTop >= 0){
-
-				stopMoveBgSky();
-
 				upperBG.stop(true, true);
-
+				stopMoveBgSky();
+				console.log(currTestStat);
+				console.log('moveBgSky');
 				showEndResult();
-
 			};
 		});
 
@@ -767,7 +762,7 @@ function resetFirewallTest(){
 function showFirewallResult(){
 
 	if(firewallResult == "pass"){
-		$(".lvl-stat").html("pass!");
+		$(".lvl-stat").html("passed!");
 	}else{
 		$(".bar-sect .bar-hdr").addClass("fail");
 		$(".lvl-stat").html("blocked!");
@@ -802,7 +797,6 @@ function moveFirewallBarIn(){
 		top: barTopPosi
 		}, 300, "easeOutQuint",function(){
 			barSect.stop(true,true);
-
 			startFirewallTest();
 	});
 };
@@ -812,8 +806,10 @@ function moveFirewallBarOut(){
 		top: barOutPosi
 		}, 300, "easeInSine",function(){
 			barSect.stop(true,true);
-
-			nextFirewallTest()
+			
+			if( currTestStat != 'done' ){
+				nextFirewallTest()
+			}
 	});
 };
 
@@ -828,9 +824,8 @@ function nextFirewallTest(){
 	// this line finished firewall test and returned the END RESULT screen
 	if( currFirewall == 2 || fulltest == false ){
 		currTestStat = "done";
-
+		
 		startMoveBgSky();
-
 		stopRptSky();
 
 		//--------------------------------------------------------------
@@ -849,6 +844,7 @@ function nextFirewallTest(){
 		//--------------------------------------------------------------
 
 	}else if( currFirewall == 1 ){
+		jQuery(".lvl-desc").html('');
 		moveFirewallBarIn();
 		currFirewall ++;
 	};
@@ -868,6 +864,7 @@ function showFailEndScene(){
 	upperBG.animate({
 		top: 0
 		}, 500, "easeOutQuint", function() {
+			console.log('showFailEndScene');
 			showEndResult();
 	});
 
@@ -912,7 +909,7 @@ function showEndResult(){
 		}
 
 		$(".ctnt-hdr.success .result-txt").html(tempResultClass);
-		$(".ctnt-hdr.success .mos-val").html(successMOSVal);
+		$(".ctnt-hdr.success .mos-val").html('&nbsp;'+successMOSVal);
 		$(".ctnt-hdr.success").children('.desc').html( '('+resultSet[successResultClass].desc+')' );
 
 		if( !fulltest ){
@@ -925,49 +922,64 @@ function showEndResult(){
 			});
 			// ---
 		}else{
-			console.log('start...');
-			var sipPortTestResult = '',
-			rtpPortTestResult = '';
+			
+			// --- populate tooltip content
+			if( $('.tab-result.selected').length == 1 ){
+				barSect.hide();
+				stopMoveFlame();
+				theFlame.hide();
+				rocketStopMove();
+				
+				console.log('start...');
+				var sipPortTestResult = '',
+				rtpPortTestResult = '';
 
-			if( typeof(siptest1) != 'undefined' && typeof(siptest2) != 'undefined' && siptest1 && siptest2 ){
-				sipPortTestResult = 'Ports are opened.';
-			}else{
-				sipPortTestResult = 'Ports closed/used by other application.';
-			}
+				if( typeof(siptest1) != 'undefined' && typeof(siptest2) != 'undefined' && siptest1 && siptest2 ){
+					sipPortTestResult = 'Ports are opened.';
+				}else{
+					sipPortTestResult = 'Ports closed/used by other application.';
+				}
 
-			if( typeof( rtptest ) != 'undefined' ){
-				var allPortsOpened = true;
-				console.log('looping result....');
-				$.each(rtptest, function(i,e){
-					if( allPortsOpened ){
-						if( e.a.rcv === true && e.a.send === true && e.v.rcv === true && e.v.send === true ){
-							// do nothing
-						}else{
-							allPortsOpened = false;
+				if( typeof( rtptest ) != 'undefined' ){
+					var allPortsOpened = true;
+					console.log('looping result....');
+					$.each(rtptest, function(i,e){
+						if( allPortsOpened ){
+							if( e.a.rcv === true && e.a.send === true && e.v.rcv === true && e.v.send === true ){
+								// do nothing
+							}else{
+								allPortsOpened = false;
+							}
 						}
-					}
-				});
+					});
 
-				if( allPortsOpened ){
-					rtpPortTestResult = 'Ports are opened.';
+					if( allPortsOpened ){
+						rtpPortTestResult = 'Ports are opened.';
+					}else{
+						rtpPortTestResult = 'Ports closed/used by other application.';
+					}
 				}else{
 					rtpPortTestResult = 'Ports closed/used by other application.';
 				}
-			}else{
-				rtpPortTestResult = 'Ports closed/used by other application.';
+
+				// console.log( $('.tab-result.selected').length );
+				// console.log( $('.tab-result.selected') );
+				
+				$.appendResultTooltip( $('.tab-result.selected'), {
+					sipResult: sipPortTestResult,
+					rtpResult: rtpPortTestResult,
+					rtpStart: currRTPStart,
+					rtpEnd: currRTPEnd,
+				});
+				// --- populate tooltip content
+				
+				currTestStat = 'done';
+				// barSect.animate({
+					// top: barOutPosi
+					// }, 300, "easeInSine",function(){
+						// barSect.stop(true,true);
+				// });
 			}
-
-			console.log( $('.tab-result.selected').length );
-			console.log( $('.tab-result.selected') );
-
-			// --- populate tooltip content
-			$.appendResultTooltip( $('.tab-result.selected'), {
-				sipResult: sipPortTestResult,
-				rtpResult: rtpPortTestResult,
-				rtpStart: currRTPStart,
-				rtpEnd: currRTPEnd,
-			});
-			// --- populate tooltip content
 		}
 
 	}else if(endResultStat == "fail-result"){
@@ -1074,48 +1086,32 @@ var currFormNum;
 var currForm;
 
 function initTestForm(){
-
 	currCodec = $( '#codec-type' ).val();
 	if($(".select-tab-hdr .select-tab").length > 0){
-
 		currFormNum = 0;
-
 		var theTab = $(".select-tab-hdr .select-tab");
-
 		theTab.click(function(){
-
 			currFormNum = theTab.index(this);
-
 			showTextForm(currFormNum);
-
 		})
-
 		showTextForm(currFormNum);
 	};
-
 };
 
 function showTextForm(n){
-
 	currFormNum = n;
-
 	var theTab = $(".select-tab-hdr .select-tab");
 	//var theForm = $(".form-hdr");
-
 	theTab.removeClass("selected");
 	//theForm.hide();
-
 	theTab.eq(currFormNum).addClass("selected");
 	//theForm.eq(currFormNum).show();
-
 	if(currFormNum == 0){
 		showFormBasic();
 	}else{
 		showFormAdvance();
 	};
-
 	hideErrorPort();
-
 	hideTooltip();
 };
 
@@ -1381,6 +1377,23 @@ function sipServerCreated( port, status ){
 socket.on("tcp_packet_sent", function(data){
 	console.log('vobb: tcp_packet_sent??');
 	console.log(data);
+	
+	if( data.send ){
+		setVobbSend( data.port, data.send );
+	}
+	
+	// if( data.send ){
+		// sipResult[data.port].v.send = data.send;
+		// setAppletSend( data.port );
+	// }
+	
+	if( !data.rcv && !data.send ){
+		Scanner.closePort0();
+		appletSendResult(data.port, false);
+	}
+	console.log( sipResult[data.port] );
+	
+	/*
 	// vobb server automatically send STOP signal to stop applet server(5060) from listening
 	if( data.port == 5060 ){
 		if( data.rcv ){
@@ -1416,24 +1429,25 @@ socket.on("tcp_packet_sent", function(data){
 			Scanner.closePort1();
 			appletSendResult(5061, false);
 		}
-
 	}
+	*/
 });
 
 // returned by vobb while "socket.on(tcp_packet_sent") is running
 socket.on("tcp_packet_received", function(data){
 	console.log('vobb: tcp_packet_received??');
 	console.log(data);
-
-	if( SIP5060Received === false && data.port == 5060 ){
-		sipResult[5060].v.rcv = data.rcv;
-		sipResult[5060].v.send = data.send;
-		SIP5060Received = true;
-	}else if( SIP5061Received === false && data.port == 5061 ){
-		sipResult[5061].v.rcv = data.rcv;
-		sipResult[5061].v.send = data.send;
-		SIP5061Received = true;
-	}
+	
+	setVobbReceive( data.port, data.rcv );
+	setAppletSend( data.port, data.send );
+	
+	// if( SIP5060Received === false && data.port == 5060 ){
+		// sipResult[5060].v.send = data.send;
+		// SIP5060Received = true;
+	// }else if( SIP5061Received === false && data.port == 5061 ){
+		// sipResult[5061].v.send = data.send;
+		// SIP5061Received = true;
+	// }
 
 });
 
@@ -1441,14 +1455,17 @@ socket.on("tcp_packet_received", function(data){
 function appletSendResult( port, result ){
 	console.log('applet: appletSendResult??');
 	console.log(port+' -> '+result);
+	
+	setAppletReceive( port, result );
+	//sipResult[port].a.send = result;
+	console.log(sipResult[port]);
+	
+	var oResult = sipResult[port].a.rcv && sipResult[port].a.send && sipResult[port].v.rcv && sipResult[port].v.send;
+	
 	if( port == 5060 ){
-		sipResult[5060].a.send = result;
-		var b = sipResult[5060].a.rcv && sipResult[5060].a.send && sipResult[5060].v.rcv && sipResult[5060].v.send;
-		SIPTest1Result( b );
+		SIPTest1Result( oResult );
 	}else if( port == 5061 ){
-		sipResult[5061].a.send = result;
-		var a = sipResult[5061].a.rcv && sipResult[5061].a.send && sipResult[5061].v.rcv && sipResult[5061].v.send;
-		SIPTest2Result( a );
+		SIPTest2Result( oResult );
 	}
 }
 
@@ -1465,7 +1482,7 @@ function SIPTest1Result( result ){
 		$(".bar-sect .bar-hdr").addClass("fail");
 	}else{
 		firewallResult = "pass";
-		firewallResultText = "pass!";
+		firewallResultText = "passed!";
 		$(".bar-sect .bar-hdr").removeClass("fail");
 	}
 
@@ -1505,7 +1522,7 @@ function SIPTest2Result( result ){
 		$(".bar-sect .bar-hdr").addClass("fail");
 	}else{
 		firewallResult = "pass";
-		firewallResultText = "pass!";
+		firewallResultText = "passed!";
 		$(".bar-sect .bar-hdr").removeClass("fail");
 	}
 
@@ -1526,6 +1543,19 @@ socket.on("tcp_server_terminated", function(resp){
 	console.log("tcp server terminated?");
 	console.log(resp);
 });
+
+function setVobbReceive(port, status){
+	sipResult[port].v.rcv = status;
+}
+function setVobbSend(port, status){
+	sipResult[port].v.send = status;
+}
+function setAppletReceive(port, status){
+	sipResult[port].a.rcv = status;
+}
+function setAppletSend(port, status){
+	sipResult[port].a.send = status;
+}
 /////////////// SIP
 
 
@@ -1537,7 +1567,7 @@ socket.on("tcp_server_terminated", function(resp){
 /////////////// RTP
 var startingRTP = 0;
 var udpServerPrepared = false;
-var vobbReceivedPacket = false;
+// var vobbReceivedPacket = false;
 
 function checkRTPTestResult(){
 	console.log(sipResult[5061].a);
@@ -1574,7 +1604,7 @@ socket.on("udp_server_prepared", function( resp ){
 
 
 function checkUDPPort( port ){
-	vobbReceivedPacket = false;
+	// vobbReceivedPacket = false;
 	$(".lvl-stat").html('');
 
 	rtptest[port] = {
@@ -1590,8 +1620,13 @@ function checkUDPPort( port ){
 
 // applet request vobb to send test packet
 function udpServerRequestTest( port ){
-	console.log('vobb: try to send UDP packet to applet server on port ' + port);
-	socket.emit("send_udp_packet", {port: port, address: local_address});
+	// console.log( requestList );
+	if( typeof( requestList[port] ) == 'undefined' ){
+		requestList[port] = true;
+		console.log('vobb: try to seng UDP packet to applet server on port ' + port);
+		socket.emit("send_udp_packet", {port: port, address: local_address});
+		Scanner.sendUDPPacket( port ); // send packet to vobb first, no need to wait for the reply
+	}
 }
 
 // applet have success/fail to created UDP server?
@@ -1606,27 +1641,14 @@ function udpServerCreated( port, createStatus, listenStatus ){
 	//rtptest[port].v.send = true;
 
 	if( createStatus ){
-		// if( listenStatus ){
-			// rtptest[port].a.rcv = true;
-		// }else{
-			// rtptest[port].a.rcv = false;
-		// }
+		udpServerRequestTest( port );
 	}else{
-		// if( typeof( rtptest[port] ) != 'undefined' ){
-			// if packet has been received
-			// if( rtptest[port].a.rcv == true || vobbReceivedPacket ){
-
-			// }else{
-				// updateAppletReceiveStatus(port, false);
-			// }
-		// }
-
 		// if applet failed to create packet, asking for vobb to send is a wasted, as applet will not receive it
 		updateAppletReceiveStatus(port, false);
 		// failed to create UDP server for this port, so there is no need to test for the port
-		// rtptest[port].a.rcv = false;
-		//rtptest[port].v.send = true; // set by setPortStatus(), returned by applet
-		//updateAppletReceiveStatus(port, false);
+		
+		console.log('run countPcnt()');
+		startCount({port: port});
 	}
 
 	// applet: test sending a packet to vobb server
@@ -1636,7 +1658,7 @@ function udpServerCreated( port, createStatus, listenStatus ){
 
 // vobb: received from applet
 socket.on("udp_packet_sent", function(resp){
-	console.log('vobb: UDP packetsent??');
+	console.log('vobb: UDP packet sent??');
 	console.log(resp.text);
 
 	updateVobbSendStatus( resp.port, resp.send );
@@ -1653,18 +1675,31 @@ socket.on("udp_packet_sent", function(resp){
 	// we should wait for the packet to arrive before begin counting
 	var waitTimer = 0;
 	var autoReplyIntv = setInterval(function(){
-		if( !vobbReceivedPacket ){
-			if( waitTimer > 1000 ){
+		console.log('--check type');
+		console.log( typeof( rtptest[resp.port] ) );
+		console.log('--check result');
+		console.log(rtptest[resp.port].v.rcv);
+		
+		if( typeof( rtptest[resp.port] ) != 'undefined' ){
+			if( rtptest[resp.port].v.rcv === false ){
 				clearInterval( autoReplyIntv );
-				vobbReceivedPacket = true;
+				// vobbReceivedPacket = true;
 				updateVobbReceiveStatus(resp.port, false); // no packet received
+				console.log( 'waitTimer > 1000' );
 				startCount( resp );
+			}else if( rtptest[resp.port].v.rcv === true ){
+				console.log('--received--');
+				clearInterval( autoReplyIntv );
+				startCount( resp );
+			}else{
+				if( waitTimer > 1000 ){
+					clearInterval( autoReplyIntv );
+					startCount( resp );
+				}
 			}
-		}else{
-			clearInterval( autoReplyIntv );
-			startCount( resp );
 		}
-		waitTimer += 10;
+		
+		waitTimer += 100;
 	}, 30);
 });
 
@@ -1722,7 +1757,7 @@ function startCount( resp ){
 	// if applet failed to send and receive
 	if( rtptest[resp.port].a.send == true && rtptest[resp.port].a.rcv == true && rtptest[resp.port].v.send == true && rtptest[resp.port].v.rcv == true ){
 		firewallResult = "pass";
-		response = "pass!";
+		response = "passed!";
 		jQuery(".bar-sect .bar-hdr").removeClass("fail");
 	}else{
 		firewallResult = "fail";

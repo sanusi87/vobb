@@ -524,8 +524,6 @@ loadingCodec.on('codec_load_success', function(codecs){
 				console.log('child process 4 exit? code='+code);
 			}).on('error', function(code){
 				console.log('child process 4 error? code='+code);
-				console.log( vobb.udp.command.process );
-				console.log( vobb.udp.command.file + ' - '+vobb.ip.private+' - '+param.port );
 				message.code = 0;
 				message.text = 'Failed to prepare UDP servers!';
 				socket.emit("udp_server_prepared", message);
@@ -619,9 +617,6 @@ loadingCodec.on('codec_load_success', function(codecs){
 				'port='+param.port,
 				'address='+param.address
 			], { stdio: [ 0, 'pipe' ] });
-			// console.log(vobb.udp.client.process);
-			// console.log(vobb.udp.client.file);
-			// console.log(param.address+':'+param.port);
 
 			// when all servers has been initialized
 			ssp.on('close', function(code){
@@ -644,8 +639,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			// if received a REPLY from applet
 			ssp.stdout.on('data', function(data){
 				// console.log('receiving from child proc 5...');
-				console.log('-->'+data.toString());
-				console.log( /^packet.sent/g.test( data.toString() ) );
+				// console.log( /^packet.sent/g.test( data.toString() ) );
 				// message.rcv = true;
 				// message.send = true;
 
@@ -654,6 +648,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				// console.log(someData);
 				// console.log(/APLT/ig.test(someData));
 
+				console.log('received data on '+param.port+' --> '+data.toString());
 				if( /^packet.sent/g.test( data.toString() ) ){
 					message.send = true;
 					message.text = data.toString();
@@ -773,6 +768,11 @@ loadingCodec.on('codec_load_success', function(codecs){
 					message.rcv = true;
 					message.send = true;
 					socket.emit("tcp_packet_received", message);
+				}
+				
+				if( /packetsent/g.test( data.toString() ) ){
+					message.send = true;
+					socket.emit("tcp_packet_sent", message);
 				}
 			});
 

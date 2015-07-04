@@ -40,12 +40,12 @@ client.on('end', function() {
 
 function sendPacket( theClient ){
 	theClient.write("SEND\n", function(){
-		//console.log("client: sent to server!");
+		console.log("packetsent!");
 	});
 }
 
 function sendStopPacket( theClient ){
 	theClient.write("DONE\n", function(){
-		//console.log("client: sent done!");
+		console.log("packetsent!");
 	});
 }
