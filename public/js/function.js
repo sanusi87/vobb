@@ -825,7 +825,9 @@ function nextFirewallTest(){
 	if( currFirewall == 2 || fulltest == false ){
 		currTestStat = "done";
 
-		//startMoveBgSky();
+		// startMoveBgSky();
+		// stopMoveBgSky();
+		moveBgSky();
 
 		stopRptSky();
 
