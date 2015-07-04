@@ -187,7 +187,7 @@ socket.on("checked_address", function(data){
 	if( data.status == "same" ){
 		fulltest = true;
 		Scanner.fulltest = true;
-		Scanner.serverCreateTimeout = 4000;
+		//Scanner.serverCreateTimeout = 4000;
 	}
 });
 //////////////////////////
