@@ -273,6 +273,7 @@ function resetApp(){
 
 	SIP5060Received = false;
 	SIP5061Received = false;
+	$('.tab-result.selected').removeClass('selected');
 
 	theFormCtnt.show();
 
@@ -925,56 +926,59 @@ function showEndResult(){
 			});
 			// ---
 		}else{
-			console.log('start...');
-			var sipPortTestResult = '',
-			rtpPortTestResult = '';
+			
+			// --- populate tooltip content
+			if( $('.tab-result.selected').length == 1 ){
+				console.log('start...');
+				var sipPortTestResult = '',
+				rtpPortTestResult = '';
 
-			if( typeof(siptest1) != 'undefined' && typeof(siptest2) != 'undefined' && siptest1 && siptest2 ){
-				sipPortTestResult = 'Ports are opened.';
-			}else{
-				sipPortTestResult = 'Ports closed/used by other application.';
-			}
+				if( typeof(siptest1) != 'undefined' && typeof(siptest2) != 'undefined' && siptest1 && siptest2 ){
+					sipPortTestResult = 'Ports are opened.';
+				}else{
+					sipPortTestResult = 'Ports closed/used by other application.';
+				}
 
-			if( typeof( rtptest ) != 'undefined' ){
-				var allPortsOpened = true;
-				console.log('looping result....');
-				$.each(rtptest, function(i,e){
-					if( allPortsOpened ){
-						if( e.a.rcv === true && e.a.send === true && e.v.rcv === true && e.v.send === true ){
-							// do nothing
-						}else{
-							allPortsOpened = false;
+				if( typeof( rtptest ) != 'undefined' ){
+					var allPortsOpened = true;
+					console.log('looping result....');
+					$.each(rtptest, function(i,e){
+						if( allPortsOpened ){
+							if( e.a.rcv === true && e.a.send === true && e.v.rcv === true && e.v.send === true ){
+								// do nothing
+							}else{
+								allPortsOpened = false;
+							}
 						}
-					}
-				});
+					});
 
-				if( allPortsOpened ){
-					rtpPortTestResult = 'Ports are opened.';
+					if( allPortsOpened ){
+						rtpPortTestResult = 'Ports are opened.';
+					}else{
+						rtpPortTestResult = 'Ports closed/used by other application.';
+					}
 				}else{
 					rtpPortTestResult = 'Ports closed/used by other application.';
 				}
-			}else{
-				rtpPortTestResult = 'Ports closed/used by other application.';
-			}
 
-			console.log( $('.tab-result.selected').length );
-			console.log( $('.tab-result.selected') );
-			
-			// --- populate tooltip content
-			$.appendResultTooltip( $('.tab-result.selected'), {
-				sipResult: sipPortTestResult,
-				rtpResult: rtpPortTestResult,
-				rtpStart: currRTPStart,
-				rtpEnd: currRTPEnd,
-			});
-			// --- populate tooltip content
-			
-			currTestStat = 'done';
-			barSect.animate({
-				top: barOutPosi
-				}, 300, "easeInSine",function(){
-					barSect.stop(true,true);
-			});
+				// console.log( $('.tab-result.selected').length );
+				// console.log( $('.tab-result.selected') );
+				
+				$.appendResultTooltip( $('.tab-result.selected'), {
+					sipResult: sipPortTestResult,
+					rtpResult: rtpPortTestResult,
+					rtpStart: currRTPStart,
+					rtpEnd: currRTPEnd,
+				});
+				// --- populate tooltip content
+				
+				currTestStat = 'done';
+				barSect.animate({
+					top: barOutPosi
+					}, 300, "easeInSine",function(){
+						barSect.stop(true,true);
+				});
+			}
 		}
 
 	}else if(endResultStat == "fail-result"){
