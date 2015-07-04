@@ -471,7 +471,9 @@ function beginTest(){
 
 		showFailEndScene();
 	}else{
-
+		jQuery(".lvl-stat").html('');
+		jQuery(".lvl-desc").html('');
+		
 		runQualityTest();
 	};
 
@@ -635,7 +637,6 @@ function hideRocketBubble(){
 //-------quality test---------------------//
 
 function runQualityTest(){
-	jQuery(".lvl-stat").html('');
 	currTestStat = "quality";
 	theFormCtnt.fadeOut(500);
 
