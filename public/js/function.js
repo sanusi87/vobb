@@ -762,7 +762,7 @@ function resetFirewallTest(){
 function showFirewallResult(){
 
 	if(firewallResult == "pass"){
-		$(".lvl-stat").html("pass!");
+		$(".lvl-stat").html("passed!");
 	}else{
 		$(".bar-sect .bar-hdr").addClass("fail");
 		$(".lvl-stat").html("blocked!");
