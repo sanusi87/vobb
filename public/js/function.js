@@ -1700,7 +1700,7 @@ socket.on("udp_packet_sent", function(resp){
 				console.log( 'waitTimer > 1000' );
 				startCount( resp );
 			}
-		}else{
+		}else if( rtptest[resp.port].v.rcv === true ){
 			console.log('--received--');
 			clearInterval( autoReplyIntv );
 			startCount( resp );
