@@ -1377,13 +1377,14 @@ socket.on("tcp_packet_sent", function(data){
 	console.log('vobb: tcp_packet_sent??');
 	console.log(data);
 	
-	if( data.rcv ){
-		sipResult[data.port].a.rcv = data.rcv;
+	if( data.send ){
+		setVobbSend( data.port, data.send );
 	}
 	
-	if( data.send ){
-		sipResult[data.port].v.send = data.send;
-	}
+	// if( data.send ){
+		// sipResult[data.port].v.send = data.send;
+		// setAppletSend( data.port );
+	// }
 	
 	if( !data.rcv && !data.send ){
 		Scanner.closePort0();
@@ -1435,16 +1436,17 @@ socket.on("tcp_packet_sent", function(data){
 socket.on("tcp_packet_received", function(data){
 	console.log('vobb: tcp_packet_received??');
 	console.log(data);
-
-	if( SIP5060Received === false && data.port == 5060 ){
-		sipResult[5060].v.rcv = data.rcv;
-		sipResult[5060].v.send = data.send;
-		SIP5060Received = true;
-	}else if( SIP5061Received === false && data.port == 5061 ){
-		sipResult[5061].v.rcv = data.rcv;
-		sipResult[5061].v.send = data.send;
-		SIP5061Received = true;
-	}
+	
+	setVobbReceive( data.port, data.rcv );
+	setAppletSend( data.port, data.send );
+	
+	// if( SIP5060Received === false && data.port == 5060 ){
+		// sipResult[5060].v.send = data.send;
+		// SIP5060Received = true;
+	// }else if( SIP5061Received === false && data.port == 5061 ){
+		// sipResult[5061].v.send = data.send;
+		// SIP5061Received = true;
+	// }
 
 });
 
@@ -1453,7 +1455,8 @@ function appletSendResult( port, result ){
 	console.log('applet: appletSendResult??');
 	console.log(port+' -> '+result);
 	
-	sipResult[port].a.send = result;
+	setAppletReceive( port, result );
+	//sipResult[port].a.send = result;
 	console.log(sipResult[port]);
 	
 	var oResult = sipResult[port].a.rcv && sipResult[port].a.send && sipResult[port].v.rcv && sipResult[port].v.send;
@@ -1539,6 +1542,19 @@ socket.on("tcp_server_terminated", function(resp){
 	console.log("tcp server terminated?");
 	console.log(resp);
 });
+
+function setVobbReceive(port, status){
+	sipResult[port].v.rcv = status;
+}
+function setVobbSend(port, status){
+	sipResult[port].v.send = status;
+}
+function setAppletReceive(port, status){
+	sipResult[port].a.rcv = status;
+}
+function setAppletSend(port, status){
+	sipResult[port].a.send = status;
+}
 /////////////// SIP
 
 
