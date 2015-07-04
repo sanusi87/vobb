@@ -635,6 +635,7 @@ function hideRocketBubble(){
 //-------quality test---------------------//
 
 function runQualityTest(){
+	jQuery(".lvl-stat").html('');
 	currTestStat = "quality";
 	theFormCtnt.fadeOut(500);
 
@@ -649,7 +650,6 @@ function runQualityTest(){
 	theRocket.animate({
 		top: rocketTakeOffPosi
 	}, 800, "easeOutQuint", function(){
-		jQuery(".lvl-stat").html('');
 		rocketOriY = rocketTakeOffPosi;
 		rocketMove();
 		showRocketBubble()
