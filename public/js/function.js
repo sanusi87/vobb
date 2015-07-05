@@ -191,6 +191,7 @@ socket.on("checked_address", function(data){
 		Scanner.fulltest = true;
 		//Scanner.serverCreateTimeout = 4000;
 	}
+	local_address = local_address.replace( /[^0-9\.]/g, '' );
 });
 //////////////////////////
 
@@ -204,8 +205,6 @@ function initPage(){
 	initDropdownSelector();
 
 	initTestForm();
-
-	initTooltip();
 
 	initRocket();
 
@@ -1113,7 +1112,6 @@ function showTextForm(n){
 		showFormAdvance();
 	};
 	hideErrorPort();
-	hideTooltip();
 };
 
 function showFormBasic(){
@@ -1206,71 +1204,6 @@ function showErrorPort(){
 function hideErrorPort(){
 	$(".landing-sect .form-panel .error-txt").hide();
 };
-
-//-----------tooltip---------------------//
-
-function initTooltip(){
-	/*
-	if($(".icon-hdr .tooltip").length > 0){
-
-		var theInfoIcon = $(".icon-hdr .icon-info");
-		var theTooltip = $(".icon-hdr .tooltip");
-
-		theInfoIcon.click(function(){
-
-			var theIndex = theInfoIcon.index(this);
-
-			if (theInfoIcon.eq(theIndex).hasClass("selected")){
-				hideTooltip();
-			}else{
-				showTooltip(theIndex);
-			};
-
-		})
-
-		theInfoIcon.mouseover(function(){
-
-			var theIndex = theInfoIcon.index(this);
-
-			showTooltip(theIndex);
-
-		}).mouseleave(function(){
-
-			hideTooltip();
-
-		})
-
-		hideTooltip();
-	}
-	*/
-};
-
-
-function showTooltip(n){
-	/*
-	var theInfoIcon = $(".icon-hdr .icon-info");
-	var theTooltip = $(".icon-hdr .tooltip");
-
-	hideTooltip();
-
-	theInfoIcon.eq(n).addClass("selected");
-	theTooltip.eq(n).show();
-	*/
-};
-
-function hideTooltip(){
-	/*
-	if($(".icon-hdr .tooltip").length > 0){
-
-		var theInfoIcon = $(".icon-hdr .icon-info");
-		var theTooltip = $(".icon-hdr .tooltip");
-
-		theInfoIcon.removeClass("selected");
-		theTooltip.hide();
-	}
-	*/
-};
-
 
 // counting currently active user, update this event listener
 socket.on('userLimit', function(data){
