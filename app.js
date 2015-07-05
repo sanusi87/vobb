@@ -651,13 +651,14 @@ loadingCodec.on('codec_load_success', function(codecs){
 				// console.log(/APLT/ig.test(someData));
 
 				console.log('received data on '+param.port+' --> '+data.toString());
+				console.log( /^packet.sent/g.test( data.toString() ) );
 				if( /^packet.sent/g.test( data.toString() ) ){
 					message.send = true;
 					message.text = data.toString();
 					socket.emit("udp_packet_sent", message);
 				}
 
-				//if( /APLT/ig.test(someData) ){
+				//if( /OK/g.test( data.toString() ) ){
 					//message.code = 1;
 					//message.text = someData;
 					// replied = true;
