@@ -35,7 +35,11 @@ client.on('data', function(data) {
 });
 
 client.on('end', function() {
-	//console.log('client: disconnected from server');
+	console.log('client: disconnected from server');
+});
+
+client.on('error', function(err){
+	console.log('tcp client: '+err.toString());
 });
 
 function sendPacket( theClient ){
