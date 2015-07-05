@@ -124,6 +124,7 @@ var SIP5060Received = false,
 SIP5061Received = false;
 
 jQuery(function($){
+	Scanner.host = 'vobb2.dev';
 	titleText = $(document).find('title').text();
 
 	$('#subscribe-button').click(function(){
@@ -277,7 +278,7 @@ function resetApp(){
 	$('.tab-result.selected').removeClass('selected');
 	requestList = {};
 	// Scanner.closePort();
-	
+
 	theFormCtnt.show();
 
 	landSky.hide();
@@ -473,7 +474,7 @@ function beginTest(){
 	}else{
 		jQuery(".lvl-stat").html('');
 		jQuery(".lvl-desc").html('');
-		
+
 		runQualityTest();
 	};
 
@@ -806,7 +807,7 @@ function moveFirewallBarOut(){
 		top: barOutPosi
 		}, 300, "easeInSine",function(){
 			barSect.stop(true,true);
-			
+
 			if( currTestStat != 'done' ){
 				nextFirewallTest()
 			}
@@ -824,7 +825,7 @@ function nextFirewallTest(){
 	// this line finished firewall test and returned the END RESULT screen
 	if( currFirewall == 2 || fulltest == false ){
 		currTestStat = "done";
-		
+
 		startMoveBgSky();
 		stopRptSky();
 
@@ -922,14 +923,14 @@ function showEndResult(){
 			});
 			// ---
 		}else{
-			
+
 			// --- populate tooltip content
 			if( $('.tab-result.selected').length == 1 ){
 				barSect.hide();
 				stopMoveFlame();
 				theFlame.hide();
 				rocketStopMove();
-				
+
 				console.log('start...');
 				var sipPortTestResult = '',
 				rtpPortTestResult = '';
@@ -964,7 +965,7 @@ function showEndResult(){
 
 				// console.log( $('.tab-result.selected').length );
 				// console.log( $('.tab-result.selected') );
-				
+
 				$.appendResultTooltip( $('.tab-result.selected'), {
 					sipResult: sipPortTestResult,
 					rtpResult: rtpPortTestResult,
@@ -972,7 +973,7 @@ function showEndResult(){
 					rtpEnd: currRTPEnd,
 				});
 				// --- populate tooltip content
-				
+
 				currTestStat = 'done';
 				// barSect.animate({
 					// top: barOutPosi
@@ -1377,22 +1378,22 @@ function sipServerCreated( port, status ){
 socket.on("tcp_packet_sent", function(data){
 	console.log('vobb: tcp_packet_sent??');
 	console.log(data);
-	
+
 	if( data.send ){
 		setVobbSend( data.port, data.send );
 	}
-	
+
 	// if( data.send ){
 		// sipResult[data.port].v.send = data.send;
 		// setAppletSend( data.port );
 	// }
-	
+
 	if( !data.rcv && !data.send ){
 		Scanner.closePort0();
 		appletSendResult(data.port, false);
 	}
 	console.log( sipResult[data.port] );
-	
+
 	/*
 	// vobb server automatically send STOP signal to stop applet server(5060) from listening
 	if( data.port == 5060 ){
@@ -1437,10 +1438,10 @@ socket.on("tcp_packet_sent", function(data){
 socket.on("tcp_packet_received", function(data){
 	console.log('vobb: tcp_packet_received??');
 	console.log(data);
-	
+
 	setVobbReceive( data.port, data.rcv );
 	setAppletSend( data.port, data.send );
-	
+
 	// if( SIP5060Received === false && data.port == 5060 ){
 		// sipResult[5060].v.send = data.send;
 		// SIP5060Received = true;
@@ -1455,13 +1456,13 @@ socket.on("tcp_packet_received", function(data){
 function appletSendResult( port, result ){
 	console.log('applet: appletSendResult??');
 	console.log(port+' -> '+result);
-	
+
 	setAppletReceive( port, result );
 	//sipResult[port].a.send = result;
 	console.log(sipResult[port]);
-	
+
 	var oResult = sipResult[port].a.rcv && sipResult[port].a.send && sipResult[port].v.rcv && sipResult[port].v.send;
-	
+
 	if( port == 5060 ){
 		SIPTest1Result( oResult );
 	}else if( port == 5061 ){
@@ -1646,7 +1647,7 @@ function udpServerCreated( port, createStatus, listenStatus ){
 		// if applet failed to create packet, asking for vobb to send is a wasted, as applet will not receive it
 		updateAppletReceiveStatus(port, false);
 		// failed to create UDP server for this port, so there is no need to test for the port
-		
+
 		console.log('run countPcnt()');
 		startCount({port: port});
 	}
@@ -1679,7 +1680,7 @@ socket.on("udp_packet_sent", function(resp){
 		console.log( typeof( rtptest[resp.port] ) );
 		console.log('--check result');
 		console.log(rtptest[resp.port].v.rcv);
-		
+
 		if( typeof( rtptest[resp.port] ) != 'undefined' ){
 			if( rtptest[resp.port].v.rcv === false ){
 				clearInterval( autoReplyIntv );
@@ -1698,7 +1699,7 @@ socket.on("udp_packet_sent", function(resp){
 				}
 			}
 		}
-		
+
 		waitTimer += 100;
 	}, 30);
 });
