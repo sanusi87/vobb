@@ -1,0 +1,43 @@
+doctype html
+
+html(xmlns="http://www.w3.org/1999/xhtml")
+	head
+		title #{title}
+	body
+
+		p#local-address
+			strong
+
+		p#inet-address
+			strong
+
+
+		div#applet-container
+			script(type="text/javascript", src="/js/deployJava.js")
+			script(type="text/javascript").
+				var attributes = {
+					code:"PortScanner.class",
+					codebase: "/",
+					archive:"PortScanner20150702.jar?ver=1.0",
+					width:170,
+					height:40,
+					id:"Scanner",
+					name:"Scanner",
+					mayscript: "mayscript",
+					scriptable:"true"
+				};
+				var parameters = {};
+				parameters.minimum_sip = 5060;
+				parameters.maximum_sip = 5061;
+				parameters.minimum_rtp = typeof currRTPStart == 'undefined' ? 10000 : currRTPStart;
+				var version = '1.8';
+				deployJava.runApplet(attributes, parameters, version);
+
+		script(type="text/javascript" src="/js/jquery.js")
+		script(type="text/javascript" src="/js/custom.js?ver=1.1")
+		script(type="text/javascript").
+			setInterval(function(){
+				console.log(Scanner.local_address);
+				$('#local-address > strong').text( local_address );
+				$('#inet-address > strong').text( inet_address );
+			}, 1000);
