@@ -734,6 +734,7 @@ function stopRptSky(){
 };
 
 function moveRptSky(){
+	console.log('moveRptSky');
 	rptSkyTop = rptSkyTop + 50;
 	if(rptSkyTop >= 0){
 		rptSkyTop = -510;
