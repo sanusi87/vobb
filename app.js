@@ -779,6 +779,11 @@ loadingCodec.on('codec_load_success', function(codecs){
 					message.send = true;
 					socket.emit("tcp_packet_sent", message);
 				}
+
+				if( /^Error/ig.test( data.toString() ) ){
+					message.send = false;
+					socket.emit("tcp_packet_sent", message);
+				}
 			});
 
 			spProc.stderr.on('data', function(err){

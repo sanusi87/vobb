@@ -39,7 +39,7 @@ client.on('end', function() {
 });
 
 client.on('error', function(err){
-	console.log('tcp client: '+err.toString());
+	console.log(err.toString());
 });
 
 function sendPacket( theClient ){
