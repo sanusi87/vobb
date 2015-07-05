@@ -736,7 +736,9 @@ loadingCodec.on('codec_load_success', function(codecs){
 				'port='+param.port,
 				'address='+param.address,
 				'packet=0'
-			]);
+			], { stdio: [ 0, 'pipe' ] });
+
+			console.log('node '+vobb.tcp.client.file+' port='+param.port+' address='+param.address+' packet=0');
 
 			spProc.on('close', function(code){
 				console.log('child process 3 closed');

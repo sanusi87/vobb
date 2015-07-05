@@ -1355,8 +1355,20 @@ socket.on("tcp_server_prepared", function(data){
 // applet server created
 function sipServerCreated( port, status ){
 	console.log('sipServerCreated??');
-	console.log(status);
+	console.log(port+':'+status);
 
+	if( status ){
+		socket.emit("send_tcp_packet", {port: port, address: local_address});
+	}else{
+		if( port==5060 ){
+			SIPTest1Result(false);
+		}else if( port==5061 ){
+			SIPTest2Result(false);
+		}
+	}
+
+
+	/*
 	if( port == 5060 ){
 		if( status ){
 			//Scanner.beginSIPPortTest( settings.sip_min_port );
@@ -1373,6 +1385,7 @@ function sipServerCreated( port, status ){
 			SIPTest2Result(false);
 		}
 	}
+	*/
 }
 
 socket.on("tcp_packet_sent", function(data){
