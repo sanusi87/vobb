@@ -1623,19 +1623,14 @@ socket.on("udp_packet_sent", function(resp){
 	// we should wait for the packet to arrive before begin counting
 	var waitTimer = 0;
 	var autoReplyIntv = setInterval(function(){
-		console.log('--check type');
-		console.log( typeof( rtptest[resp.port] ) );
-		console.log('--check result');
-		console.log(rtptest[resp.port].v.rcv);
-
 		if( typeof( rtptest[resp.port] ) != 'undefined' ){
-			if( rtptest[resp.port].v.rcv === false ){
+			if( rtptest[resp.port].a.rcv === false ){
 				clearInterval( autoReplyIntv );
 				// vobbReceivedPacket = true;
-				updateVobbReceiveStatus(resp.port, false); // no packet received
+				updateAppletReceiveStatus(resp.port, false); // no packet received
 				console.log( 'waitTimer > 1000' );
 				startCount( resp );
-			}else if( rtptest[resp.port].v.rcv === true ){
+			}else if( rtptest[resp.port].a.rcv === true ){
 				console.log('--received--');
 				clearInterval( autoReplyIntv );
 				startCount( resp );
@@ -1646,12 +1641,16 @@ socket.on("udp_packet_sent", function(resp){
 				}
 			}
 		}
+		console.log( rtptest[resp.port].a );
+		console.log('--check result');
+		console.log(rtptest[resp.port].a.rcv);
 
 		waitTimer += 100;
 	}, 30);
 });
 
 socket.on("udp_packet_received", function(msg){
+	console.log('udp_packet_received on '+msg.port);
 	if( typeof( rtptest[msg.port] ) == 'undefined' ){
 		rtptest[msg.port] = {};
 	}
