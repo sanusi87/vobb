@@ -889,14 +889,19 @@ function showEndResult(){
 
 		if(successMOSVal < 2.49){
 			successResultClass = "VeryPoor";
+			$('a#subscribe-button').hide();
 		}else if(successMOSVal >= 2.5 && successMOSVal < 3.49){
 			successResultClass = "Poor";
+			$('a#subscribe-button').hide();
 		}else if(successMOSVal >= 3.5 && successMOSVal < 3.99){
 			successResultClass = "Acceptable";
+			$('a#subscribe-button').show();
 		}else if(successMOSVal >= 4.0 && successMOSVal < 4.29){
 			successResultClass = "Good";
+			$('a#subscribe-button').show();
 		}else{
 			successResultClass = "Excellent";
+			$('a#subscribe-button').show();
 		}
 
 		$(".quality-sect-hdr .tab-result."+successResultClass).addClass("selected");
