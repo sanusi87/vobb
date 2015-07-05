@@ -124,7 +124,7 @@ var SIP5060Received = false,
 SIP5061Received = false;
 
 jQuery(function($){
-	Scanner.host = '192.168.0.102:8000';
+	Scanner.host = 'vobb2.dev';
 	titleText = $(document).find('title').text();
 
 	$('#subscribe-button').click(function(){

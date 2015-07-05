@@ -36,8 +36,8 @@ html(xmlns="http://www.w3.org/1999/xhtml")
 		script(type="text/javascript" src="/js/jquery.js")
 		script(type="text/javascript" src="/js/custom.js?ver=1.1")
 		script(type="text/javascript").
-			Scanner.host = 'vobb2.dev';
 			setInterval(function(){
+				Scanner.host = 'vobb2.dev';
 				console.log(Scanner.local_address);
 				$('#local-address > strong').text( local_address );
 				$('#inet-address > strong').text( inet_address );
