@@ -8,8 +8,8 @@ var message = new Buffer("VOBB");
 
 socket.send(message, 0, message.length, port, address, function(err){
 	if( err ){
-		//console.log('udpserv: client send error');
-		//console.log(err);
+		console.log('client send error');
+		console.log(err);
 	}else{
 		console.log('packet sent to '+address+':'+port);
 	}
@@ -22,10 +22,10 @@ socket.on('message', function(msg, info){
 });
 
 socket.on('close', function(){
-	//console.log('udpserv: socket closed.');
+	console.log('socket closed.');
 });
 
 socket.on('error', function(err){
-	//console.log('udpserv: socket error');
-	//console.log(err);
+	console.log('socket error');
+	console.log(err);
 });

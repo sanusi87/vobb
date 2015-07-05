@@ -587,7 +587,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			}, 30);
 			//--------------------
 			*/
-			
+
 			spawn.stderr.on('data', function(err){
 				console.log('stderr. code='+err);
 
@@ -617,6 +617,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 				'port='+param.port,
 				'address='+param.address
 			], { stdio: [ 0, 'pipe' ] });
+
+			console.log('node '+vobb.udp.client.file+' port='+param.port+' address='+param.address+' packet=0');
 
 			// when all servers has been initialized
 			ssp.on('close', function(code){
@@ -649,13 +651,14 @@ loadingCodec.on('codec_load_success', function(codecs){
 				// console.log(/APLT/ig.test(someData));
 
 				console.log('received data on '+param.port+' --> '+data.toString());
+				console.log( /^packet.sent/g.test( data.toString() ) );
 				if( /^packet.sent/g.test( data.toString() ) ){
 					message.send = true;
 					message.text = data.toString();
 					socket.emit("udp_packet_sent", message);
 				}
 
-				//if( /APLT/ig.test(someData) ){
+				//if( /OK/g.test( data.toString() ) ){
 					//message.code = 1;
 					//message.text = someData;
 					// replied = true;
@@ -736,7 +739,9 @@ loadingCodec.on('codec_load_success', function(codecs){
 				'port='+param.port,
 				'address='+param.address,
 				'packet=0'
-			]);
+			], { stdio: [ 0, 'pipe' ] });
+
+			console.log('node '+vobb.tcp.client.file+' port='+param.port+' address='+param.address+' packet=0');
 
 			spProc.on('close', function(code){
 				console.log('child process 3 closed');
@@ -769,16 +774,21 @@ loadingCodec.on('codec_load_success', function(codecs){
 					message.send = true;
 					socket.emit("tcp_packet_received", message);
 				}
-				
+
 				if( /packetsent/g.test( data.toString() ) ){
 					message.send = true;
+					socket.emit("tcp_packet_sent", message);
+				}
+
+				if( /^Error/ig.test( data.toString() ) ){
+					message.send = false;
 					socket.emit("tcp_packet_sent", message);
 				}
 			});
 
 			spProc.stderr.on('data', function(err){
-				//console.log('child process stderr');
-				//console.log(err.toString());
+				console.log('child process stderr');
+				console.log(err.toString());
 				//message.code = 0;
 				//message.text = 'child process error:'+err.toString();
 				//socket.emit("tcp_packet_sent", message);

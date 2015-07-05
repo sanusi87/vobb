@@ -124,6 +124,7 @@ var SIP5060Received = false,
 SIP5061Received = false;
 
 jQuery(function($){
+	Scanner.host = 'vobb2.dev';
 	titleText = $(document).find('title').text();
 
 	$('#subscribe-button').click(function(){
@@ -190,6 +191,7 @@ socket.on("checked_address", function(data){
 		Scanner.fulltest = true;
 		//Scanner.serverCreateTimeout = 4000;
 	}
+	local_address = local_address.replace( /[^0-9\.]/g, '' );
 });
 //////////////////////////
 
@@ -203,8 +205,6 @@ function initPage(){
 	initDropdownSelector();
 
 	initTestForm();
-
-	initTooltip();
 
 	initRocket();
 
@@ -277,7 +277,7 @@ function resetApp(){
 	$('.tab-result.selected').removeClass('selected');
 	requestList = {};
 	// Scanner.closePort();
-	
+
 	theFormCtnt.show();
 
 	landSky.hide();
@@ -473,7 +473,7 @@ function beginTest(){
 	}else{
 		jQuery(".lvl-stat").html('');
 		jQuery(".lvl-desc").html('');
-		
+
 		runQualityTest();
 	};
 
@@ -734,6 +734,7 @@ function stopRptSky(){
 };
 
 function moveRptSky(){
+	//console.log('moveRptSky');
 	rptSkyTop = rptSkyTop + 50;
 	if(rptSkyTop >= 0){
 		rptSkyTop = -510;
@@ -806,7 +807,7 @@ function moveFirewallBarOut(){
 		top: barOutPosi
 		}, 300, "easeInSine",function(){
 			barSect.stop(true,true);
-			
+
 			if( currTestStat != 'done' ){
 				nextFirewallTest()
 			}
@@ -824,7 +825,7 @@ function nextFirewallTest(){
 	// this line finished firewall test and returned the END RESULT screen
 	if( currFirewall == 2 || fulltest == false ){
 		currTestStat = "done";
-		
+
 		startMoveBgSky();
 		stopRptSky();
 
@@ -888,14 +889,19 @@ function showEndResult(){
 
 		if(successMOSVal < 2.49){
 			successResultClass = "VeryPoor";
+			$('a#subscribe-button').hide();
 		}else if(successMOSVal >= 2.5 && successMOSVal < 3.49){
 			successResultClass = "Poor";
+			$('a#subscribe-button').hide();
 		}else if(successMOSVal >= 3.5 && successMOSVal < 3.99){
 			successResultClass = "Acceptable";
+			$('a#subscribe-button').show();
 		}else if(successMOSVal >= 4.0 && successMOSVal < 4.29){
 			successResultClass = "Good";
+			$('a#subscribe-button').show();
 		}else{
 			successResultClass = "Excellent";
+			$('a#subscribe-button').show();
 		}
 
 		$(".quality-sect-hdr .tab-result."+successResultClass).addClass("selected");
@@ -922,14 +928,14 @@ function showEndResult(){
 			});
 			// ---
 		}else{
-			
+
 			// --- populate tooltip content
 			if( $('.tab-result.selected').length == 1 ){
 				barSect.hide();
 				stopMoveFlame();
 				theFlame.hide();
 				rocketStopMove();
-				
+
 				console.log('start...');
 				var sipPortTestResult = '',
 				rtpPortTestResult = '';
@@ -964,7 +970,7 @@ function showEndResult(){
 
 				// console.log( $('.tab-result.selected').length );
 				// console.log( $('.tab-result.selected') );
-				
+
 				$.appendResultTooltip( $('.tab-result.selected'), {
 					sipResult: sipPortTestResult,
 					rtpResult: rtpPortTestResult,
@@ -972,7 +978,7 @@ function showEndResult(){
 					rtpEnd: currRTPEnd,
 				});
 				// --- populate tooltip content
-				
+
 				currTestStat = 'done';
 				// barSect.animate({
 					// top: barOutPosi
@@ -1112,7 +1118,6 @@ function showTextForm(n){
 		showFormAdvance();
 	};
 	hideErrorPort();
-	hideTooltip();
 };
 
 function showFormBasic(){
@@ -1206,71 +1211,6 @@ function hideErrorPort(){
 	$(".landing-sect .form-panel .error-txt").hide();
 };
 
-//-----------tooltip---------------------//
-
-function initTooltip(){
-	/*
-	if($(".icon-hdr .tooltip").length > 0){
-
-		var theInfoIcon = $(".icon-hdr .icon-info");
-		var theTooltip = $(".icon-hdr .tooltip");
-
-		theInfoIcon.click(function(){
-
-			var theIndex = theInfoIcon.index(this);
-
-			if (theInfoIcon.eq(theIndex).hasClass("selected")){
-				hideTooltip();
-			}else{
-				showTooltip(theIndex);
-			};
-
-		})
-
-		theInfoIcon.mouseover(function(){
-
-			var theIndex = theInfoIcon.index(this);
-
-			showTooltip(theIndex);
-
-		}).mouseleave(function(){
-
-			hideTooltip();
-
-		})
-
-		hideTooltip();
-	}
-	*/
-};
-
-
-function showTooltip(n){
-	/*
-	var theInfoIcon = $(".icon-hdr .icon-info");
-	var theTooltip = $(".icon-hdr .tooltip");
-
-	hideTooltip();
-
-	theInfoIcon.eq(n).addClass("selected");
-	theTooltip.eq(n).show();
-	*/
-};
-
-function hideTooltip(){
-	/*
-	if($(".icon-hdr .tooltip").length > 0){
-
-		var theInfoIcon = $(".icon-hdr .icon-info");
-		var theTooltip = $(".icon-hdr .tooltip");
-
-		theInfoIcon.removeClass("selected");
-		theTooltip.hide();
-	}
-	*/
-};
-
-
 // counting currently active user, update this event listener
 socket.on('userLimit', function(data){
 	// if more than 10 people connected, disable the testing button
@@ -1291,9 +1231,9 @@ socket.on('block',function(data){
 });
 
 // if a user opens multiple tab/window
-socket.on('unblock',function(data){
-	restartTest();
-});
+//socket.on('unblock',function(data){
+	//restartTest();
+//});
 
 
 
@@ -1354,8 +1294,20 @@ socket.on("tcp_server_prepared", function(data){
 // applet server created
 function sipServerCreated( port, status ){
 	console.log('sipServerCreated??');
-	console.log(status);
+	console.log(port+':'+status);
 
+	if( status ){
+		socket.emit("send_tcp_packet", {port: port, address: local_address});
+	}else{
+		if( port==5060 ){
+			SIPTest1Result(false);
+		}else if( port==5061 ){
+			SIPTest2Result(false);
+		}
+	}
+
+
+	/*
 	if( port == 5060 ){
 		if( status ){
 			//Scanner.beginSIPPortTest( settings.sip_min_port );
@@ -1372,27 +1324,28 @@ function sipServerCreated( port, status ){
 			SIPTest2Result(false);
 		}
 	}
+	*/
 }
 
 socket.on("tcp_packet_sent", function(data){
 	console.log('vobb: tcp_packet_sent??');
 	console.log(data);
-	
+
 	if( data.send ){
 		setVobbSend( data.port, data.send );
 	}
-	
+
 	// if( data.send ){
 		// sipResult[data.port].v.send = data.send;
 		// setAppletSend( data.port );
 	// }
-	
+
 	if( !data.rcv && !data.send ){
 		Scanner.closePort0();
 		appletSendResult(data.port, false);
 	}
 	console.log( sipResult[data.port] );
-	
+
 	/*
 	// vobb server automatically send STOP signal to stop applet server(5060) from listening
 	if( data.port == 5060 ){
@@ -1437,10 +1390,10 @@ socket.on("tcp_packet_sent", function(data){
 socket.on("tcp_packet_received", function(data){
 	console.log('vobb: tcp_packet_received??');
 	console.log(data);
-	
+
 	setVobbReceive( data.port, data.rcv );
 	setAppletSend( data.port, data.send );
-	
+
 	// if( SIP5060Received === false && data.port == 5060 ){
 		// sipResult[5060].v.send = data.send;
 		// SIP5060Received = true;
@@ -1455,13 +1408,13 @@ socket.on("tcp_packet_received", function(data){
 function appletSendResult( port, result ){
 	console.log('applet: appletSendResult??');
 	console.log(port+' -> '+result);
-	
+
 	setAppletReceive( port, result );
 	//sipResult[port].a.send = result;
 	console.log(sipResult[port]);
-	
+
 	var oResult = sipResult[port].a.rcv && sipResult[port].a.send && sipResult[port].v.rcv && sipResult[port].v.send;
-	
+
 	if( port == 5060 ){
 		SIPTest1Result( oResult );
 	}else if( port == 5061 ){
@@ -1646,7 +1599,7 @@ function udpServerCreated( port, createStatus, listenStatus ){
 		// if applet failed to create packet, asking for vobb to send is a wasted, as applet will not receive it
 		updateAppletReceiveStatus(port, false);
 		// failed to create UDP server for this port, so there is no need to test for the port
-		
+
 		console.log('run countPcnt()');
 		startCount({port: port});
 	}
@@ -1671,23 +1624,18 @@ socket.on("udp_packet_sent", function(resp){
 		//console.log('applet: sending packet to vobb:'+ resp.port);
 		//Scanner.beginRTPPortTest( resp.port );
 	//}
-	
+
 	// we should wait for the packet to arrive before begin counting
 	var waitTimer = 0;
 	var autoReplyIntv = setInterval(function(){
-		console.log('--check type');
-		console.log( typeof( rtptest[resp.port] ) );
-		console.log('--check result');
-		console.log(rtptest[resp.port].v.rcv);
-		
 		if( typeof( rtptest[resp.port] ) != 'undefined' ){
-			if( rtptest[resp.port].v.rcv === false ){
+			if( rtptest[resp.port].a.rcv === false ){
 				clearInterval( autoReplyIntv );
 				// vobbReceivedPacket = true;
-				updateVobbReceiveStatus(resp.port, false); // no packet received
+				updateAppletReceiveStatus(resp.port, false); // no packet received
 				console.log( 'waitTimer > 1000' );
 				startCount( resp );
-			}else if( rtptest[resp.port].v.rcv === true ){
+			}else if( rtptest[resp.port].a.rcv === true ){
 				console.log('--received--');
 				clearInterval( autoReplyIntv );
 				startCount( resp );
@@ -1698,12 +1646,16 @@ socket.on("udp_packet_sent", function(resp){
 				}
 			}
 		}
-		
+		console.log( rtptest[resp.port].a );
+		console.log('--check result');
+		console.log(rtptest[resp.port].a.rcv);
+
 		waitTimer += 100;
-	}, 30);
+	}, 50);
 });
 
 socket.on("udp_packet_received", function(msg){
+	console.log('udp_packet_received on '+msg.port);
 	if( typeof( rtptest[msg.port] ) == 'undefined' ){
 		rtptest[msg.port] = {};
 	}

@@ -119,7 +119,7 @@ block content
 							var attributes = {
 								code:"PortScanner.class",
 								codebase: "/",
-								archive:"PortScanner20150702.jar?ver=1.0",
+								archive:"PortScanner20150705v5_live.jar?ver=1.0",
 								width:170,
 								height:40,
 								id:"Scanner",
@@ -131,8 +131,7 @@ block content
 							parameters.minimum_sip = 5060;
 							parameters.maximum_sip = 5061;
 							parameters.minimum_rtp = typeof currRTPStart == 'undefined' ? 10000 : currRTPStart;
-							parameters.host = 'vobbtest.time.com.my';
-							var version = '1.7';
+							var version = '1.8';
 							deployJava.runApplet(attributes, parameters, version);
 
 					.note-txt
