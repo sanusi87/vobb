@@ -734,7 +734,7 @@ function stopRptSky(){
 };
 
 function moveRptSky(){
-	console.log('moveRptSky');
+	//console.log('moveRptSky');
 	rptSkyTop = rptSkyTop + 50;
 	if(rptSkyTop >= 0){
 		rptSkyTop = -510;
@@ -1226,9 +1226,9 @@ socket.on('block',function(data){
 });
 
 // if a user opens multiple tab/window
-socket.on('unblock',function(data){
-	restartTest();
-});
+//socket.on('unblock',function(data){
+	//restartTest();
+//});
 
 
 
@@ -1646,7 +1646,7 @@ socket.on("udp_packet_sent", function(resp){
 		console.log(rtptest[resp.port].a.rcv);
 
 		waitTimer += 100;
-	}, 30);
+	}, 50);
 });
 
 socket.on("udp_packet_received", function(msg){
