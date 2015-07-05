@@ -587,7 +587,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			}, 30);
 			//--------------------
 			*/
-			
+
 			spawn.stderr.on('data', function(err){
 				console.log('stderr. code='+err);
 
@@ -769,7 +769,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 					message.send = true;
 					socket.emit("tcp_packet_received", message);
 				}
-				
+
 				if( /packetsent/g.test( data.toString() ) ){
 					message.send = true;
 					socket.emit("tcp_packet_sent", message);
@@ -777,8 +777,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 			});
 
 			spProc.stderr.on('data', function(err){
-				//console.log('child process stderr');
-				//console.log(err.toString());
+				console.log('child process stderr');
+				console.log(err.toString());
 				//message.code = 0;
 				//message.text = 'child process error:'+err.toString();
 				//socket.emit("tcp_packet_sent", message);
