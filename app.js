@@ -618,6 +618,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 				'address='+param.address
 			], { stdio: [ 0, 'pipe' ] });
 
+			console.log('node '+vobb.udp.client.file+' port='+param.port+' address='+param.address+' packet=0');
+
 			// when all servers has been initialized
 			ssp.on('close', function(code){
 				console.log('child process 5 closed? code='+code);
