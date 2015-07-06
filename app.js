@@ -618,7 +618,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				'address='+param.address
 			], { stdio: [ 0, 'pipe' ] });
 
-			console.log('node '+vobb.udp.client.file+' port='+param.port+' address='+param.address+' packet=0');
+			//console.log('node '+vobb.udp.client.file+' port='+param.port+' address='+param.address+' packet=0');
 
 			// when all servers has been initialized
 			ssp.on('close', function(code){
@@ -651,7 +651,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 				// console.log(/APLT/ig.test(someData));
 
 				console.log('received data on '+param.port+' --> '+data.toString());
-				console.log( /^packet.sent/g.test( data.toString() ) );
+				//console.log( /^packet.sent/g.test( data.toString() ) );
 				if( /^packet.sent/g.test( data.toString() ) ){
 					message.send = true;
 					message.text = data.toString();
@@ -690,7 +690,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 
 			setTimeout(function(){
 				ssp.kill();
-			}, 3500);
+			}, 10000);
 
 			ssp.stderr.on('data', function(err){
 				console.log('stderr. code='+err);
@@ -724,7 +724,8 @@ loadingCodec.on('codec_load_success', function(codecs){
 
 			socket.emit("tcp_server_prepared", message);
 		});
-
+		
+		var spProc;
 		socket.on("send_tcp_packet", function(param){
 			var message = {};
 
@@ -732,14 +733,14 @@ loadingCodec.on('codec_load_success', function(codecs){
 			message.send = false;
 			message.port = param.port;
 
-			var spProc = childProcess(vobb.tcp.client.process, [
+			spProc = childProcess(vobb.tcp.client.process, [
 				vobb.tcp.client.file,
 				'port='+param.port,
 				'address='+param.address,
 				'packet=0'
 			], { stdio: [ 0, 'pipe' ] });
 
-			console.log('node '+vobb.tcp.client.file+' port='+param.port+' address='+param.address+' packet=0');
+			//console.log('node '+vobb.tcp.client.file+' port='+param.port+' address='+param.address+' packet=0');
 
 			spProc.on('close', function(code){
 				console.log('child process 3 closed');
@@ -799,6 +800,9 @@ loadingCodec.on('codec_load_success', function(codecs){
 		should we terminate the TCP server? no, not this time
 		*/
 		socket.on("terminate_tcp_server", function(param){
+			if( spProc ){
+				spProc.kill();
+			}
 			socket.emit( "tcp_server_terminated", {terminated: true} );
 		});
 		//---------------------
