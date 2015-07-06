@@ -1,0 +1,12 @@
+body {
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a {
+  color: #00b7ff;
+}
+
+hr.s1{
+    border-top: 1px solid #ddd;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}

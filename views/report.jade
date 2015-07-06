@@ -6,6 +6,7 @@ block stylesheet
 	link(rel="stylesheet", href="/report/plugins/select2-3.4.8/select2.css")
 	link(rel="stylesheet", href="/report/plugins/simple-pagination/simplePagination.css")
 	link(rel="stylesheet", href="/report/stylesheets/template_one.css")
+	link(rel="stylesheet", href="/report/stylesheets/style.css")
 
 
 block content
@@ -37,50 +38,7 @@ block content
 						th Result
 						th
 				tbody
-					if 0 < data.data.length
-						for e,i in data.data
-							tr
-								td #{i+1}
-								td #{e.ip}
-								td #{e.on.getDate()}-#{e.on.getMonth()+1}-#{e.on.getFullYear()} #{e.on.getHours()}:#{e.on.getMinutes()}:#{e.on.getSeconds()}
-								td
-									span.label.label-success Codec: #{e.codec}
-									| &nbsp;
-									span.label.label-success No. of Lines: #{e.lines}
-								td
-									if e.qt == 0
-										| Fail
-									else
-										| Success
-								td
-									span(style="display:none") #{e.qtRaw}
-									a(href="#myModal" data-toggle="modal")
-										i.glyphicon.glyphicon-list-alt
-								td #{e.sipPortMin}
-								td #{e.sipPortMax}
-								td
-									if e.sip == 0
-										| Fail
-									else
-										| Success
-								td
-									span(style="display:none")
-										| #{e.sipRaw}
-									a(href="#myModal" data-toggle="modal")
-										i.glyphicon.glyphicon-list-alt
 
-								td #{e.rtpPortMin}
-								td #{e.rtpPortMax}
-								td
-									if e.rtp == 0
-										| Fail
-									else
-										| Success
-								td
-									span(style="display:none")
-										| #{e.rtpRaw}
-									a(href="#myModal" data-toggle="modal")
-										i.glyphicon.glyphicon-list-alt
 
 				tfoot
 					tr
@@ -95,6 +53,22 @@ block content
 						span(aria-hidden="true") &times;
 						span.sr-only Close
 					h4#myModalLabel.modal-title Modal Title
+
+				.modal-body
+
+				.modal-footer
+					button.btn.btn-danger(type="button" data-dismiss="modal")
+						i.glyphicon.glyphicon-remove
+						| Close
+
+	div#rtpResultModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="rtpResultModalLabel" aria-hidden="true")
+		.modal-dialog.modal-lg
+			.modal-content
+				.modal-header
+					button.close(type="button" data-dismiss="modal")
+						span(aria-hidden="true") &times;
+						span.sr-only Close
+					h4#rtpResultModalLabel.modal-title Modal Title
 
 				.modal-body
 
