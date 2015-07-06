@@ -688,9 +688,9 @@ loadingCodec.on('codec_load_success', function(codecs){
 			// }, 30);
 			//--------------------
 
-			// setTimeout(function(){
-				// ssp.kill();
-			// }, 3500);
+			setTimeout(function(){
+				ssp.kill();
+			}, 3500);
 
 			ssp.stderr.on('data', function(err){
 				console.log('stderr. code='+err);
@@ -703,12 +703,10 @@ loadingCodec.on('codec_load_success', function(codecs){
 		});
 
 		socket.on("terminate_udp_server", function(param){
-
 			if( spawn != null ){
 				console.log('child process '+spawn.pid+' killed!?');
-
 				spawn.kill();
-				spawn = null;
+				// spawn = null;
 			}
 		});
 		//---------------------
