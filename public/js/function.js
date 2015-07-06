@@ -1640,7 +1640,7 @@ socket.on("udp_packet_sent", function(resp){
 				clearInterval( autoReplyIntv );
 				startCount( resp );
 			}else{
-				if( waitTimer > 1000 ){
+				if( waitTimer > 2000 ){
 					clearInterval( autoReplyIntv );
 					startCount( resp );
 				}
