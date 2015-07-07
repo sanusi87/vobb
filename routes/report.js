@@ -11,7 +11,7 @@ router.get('/', function(req, res) {
 		//console.log('counter '+total);
 		//loadingReport.load({});
 		//loadingReport.on('report_load_success', function(tableData){
-
+			
 			// and then send the response
 			res.render('report', {
 				title: 'VoBB Test Tools Report',
@@ -39,7 +39,7 @@ router.get('/', function(req, res) {
 			var data = {};
 			data.total = cRow[0]['totalItem'];
 			data.data = [];
-
+			
 			// execute query
 			connection.query('SELECT V.id, V.testedOn , V.ipAddress, V.numberOfLines, V.qualityTest, V.qualityTestResult, V.sipPortTest, V.sipPortMin, V.sipPortMax, V.sipPortTestResult, V.rtpPortTest, V.rtpPortMin, V.rtpPortMax, V.rtpPortTestResult, C.codecName FROM vobb_report V JOIN vobb_codecs C ON C.id = V.codec ORDER BY V.id DESC LIMIT 0,10', function(err, rows, fields){
 				for( var i in rows ){
@@ -58,12 +58,12 @@ router.get('/', function(req, res) {
 					newRow.sipPortMin = rows[i]['sipPortMin'];
 					newRow.sipPortMax = rows[i]['sipPortMax'];
 					newRow.sip = rows[i]['sipPortTestResult'];
-
+					
 					newRow.rtpRaw = rows[i]['rtpPortTest'];
 					newRow.rtpPortMin = rows[i]['rtpPortMin'];
 					newRow.rtpPortMax = rows[i]['rtpPortMax'];
 					newRow.rtp = rows[i]['rtpPortTestResult'];
-
+				
 					data.data.push(newRow);
 				}
 				// release connection so that it will be available to other user
