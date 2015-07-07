@@ -991,6 +991,7 @@ function showEndResult(){
 	s[settings['sip_min_port']] = siptest1;
 	s[settings['sip_max_port']] = siptest2;
 
+	console.log('saving report...');
 	socket.emit('testFinished', {
 		sipPortMin: settings['sip_min_port'],
 		sipPortMax: settings['sip_max_port'],
