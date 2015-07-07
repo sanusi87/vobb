@@ -1,0 +1,86 @@
+extends layout
+
+block stylesheet
+	link(rel="stylesheet", href="/report/stylesheets/bootstrap-3.1.1/dist/css/bootstrap.min.css")
+	link(rel="stylesheet", href="/report/stylesheets/bootstrap-3.1.1/docs/assets/css/docs.min.css")
+	link(rel="stylesheet", href="/report/plugins/select2-3.4.8/select2.css")
+	link(rel="stylesheet", href="/report/plugins/simple-pagination/simplePagination.css")
+	link(rel="stylesheet", href="/report/stylesheets/template_one.css")
+	link(rel="stylesheet", href="/report/stylesheets/style.css")
+
+
+block content
+
+	div.container
+		div.container-inner
+			h3 Dashboard
+			table#report-table.table
+				thead
+					tr
+						th(rowspan="2") #
+						th(rowspan="2") IP
+						th(rowspan="2") Tested On
+						th(rowspan="2") Test Param
+						th.align-center(colspan="2") Quality Test
+						th.align-center(colspan="4") SIP
+						th.align-center(colspan="4") RTP
+					tr
+						th Result
+						th
+
+						th Min Port
+						th Max Port
+						th Result
+						th
+
+						th Min Port
+						th Max Port
+						th Result
+						th
+				tbody
+
+
+				tfoot
+					tr
+						td(colspan="13")
+							div#pagination(data-total-item="#{data.total}")
+
+	div#myModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type="button" data-dismiss="modal")
+						span(aria-hidden="true") &times;
+						span.sr-only Close
+					h4#myModalLabel.modal-title Modal Title
+
+				.modal-body
+
+				.modal-footer
+					button.btn.btn-danger(type="button" data-dismiss="modal")
+						i.glyphicon.glyphicon-remove
+						| Close
+
+	div#rtpResultModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="rtpResultModalLabel" aria-hidden="true")
+		.modal-dialog.modal-lg
+			.modal-content
+				.modal-header
+					button.close(type="button" data-dismiss="modal")
+						span(aria-hidden="true") &times;
+						span.sr-only Close
+					h4#rtpResultModalLabel.modal-title Modal Title
+
+				.modal-body
+
+				.modal-footer
+					button.btn.btn-danger(type="button" data-dismiss="modal")
+						i.glyphicon.glyphicon-remove
+						| Close
+
+
+block javascript
+	script(type="text/javascript" src="/report/stylesheets/bootstrap-3.1.1/dist/js/bootstrap.min.js")
+	script(type="text/javascript" src="/report/plugins/select2-3.4.8/select2.min.js")
+	script(type="text/javascript" src="/report/plugins/simple-pagination/jquery.simplePagination.js")
+	script(type="text/javascript" src="/report/plugins/moment.min.js")
+	script(type="text/javascript" src="/report/javascripts/test.js")

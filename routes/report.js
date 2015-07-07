@@ -8,22 +8,22 @@ router.get('/', function(req, res) {
 	var loadingReport = new vobb.report();
 	loadingReport.count({});
 	loadingReport.on('report_count_success', function(total){
-		console.log('counter '+total);
-		loadingReport.load({});
-		loadingReport.on('report_load_success', function(tableData){
+		//console.log('counter '+total);
+		//loadingReport.load({});
+		//loadingReport.on('report_load_success', function(tableData){
 			
 			// and then send the response
 			res.render('report', {
-				title: 'VoBB Test Tools',
+				title: 'VoBB Test Tools Report',
 				data: {
 					total: total,
-					data: tableData
+					//data: tableData
 				}
 			});
 
-		}).on('report_load_error', function(err){
-			console.log(err);
-		});
+		//}).on('report_load_error', function(err){
+		//	console.log(err);
+		//});
 
 	}).on('report_count_error', function(err){
 		console.log(err);
