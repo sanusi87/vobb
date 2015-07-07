@@ -447,13 +447,16 @@ loadingCodec.on('codec_load_success', function(codecs){
 
 
 			// this is RTP
+			var rtpPortTestResult = false;
 			for(var i in data.rtpResult){
 				if( data.rtpResult[i].a.send && data.rtpResult[i].a.rcv && data.rtpResult[i].v.send && data.rtpResult[i].v.rcv ){
-
+					rtpPortTestResult = rtpPortTestResult && true;
 				}else{
 					totalRTPPortFail.push(i);
+					rtpPortTestResult = rtpPortTestResult && false;
 				}
 			}
+			dbItem.rtpPortTestResult = rtpPortTestResult;
 
 			dbItem.rtpPortMin = data.rtpPortMin;
 			dbItem.rtpPortMax = data.rtpPortMax;
@@ -463,11 +466,11 @@ loadingCodec.on('codec_load_success', function(codecs){
 				totalPortFail: totalRTPPortFail
 			});
 
-			if( data.rtpResult.length > 0 ){
-				dbItem.rtpPortTestResult = totalRTPPortFail.length > ( data.rtpResult.length / 2 ) ? 0 : 1;
-			}else{
-				dbItem.rtpPortTestResult = 0;
-			}
+			//if( data.rtpResult.length > 0 ){
+				//dbItem.rtpPortTestResult = totalRTPPortFail.length > ( data.rtpResult.length / 2 ) ? 0 : 1;
+			//}else{
+				//dbItem.rtpPortTestResult = 0;
+			//}
 
 			dbItem.testedOn = new Date();
 
