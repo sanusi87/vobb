@@ -478,9 +478,9 @@ loadingCodec.on('codec_load_success', function(codecs){
 				testingUser.splice( testingUser.indexOf( address.address ), 1 );
 
 				// and emit the counting event
-				io.sockets.emit( 'userLimit', {
-					currentlyTestingUser: testingUser.length
-				});
+				// io.sockets.emit( 'userLimit', {
+					// currentlyTestingUser: testingUser.length
+				// });
 			}).on('report_save_error', function(err){
 				console.log(err);
 			});
@@ -724,7 +724,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 
 			socket.emit("tcp_server_prepared", message);
 		});
-		
+
 		var spProc;
 		socket.on("send_tcp_packet", function(param){
 			var message = {};
