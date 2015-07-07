@@ -40,8 +40,6 @@ jQuery(function($){
 					<td><span class="label label-success">Codec: '+e.codec+'</span>&nbsp;<span class="label label-success">No. of Lines: '+e.lines+'</span></td> \
 					<td>'+(e.qt == 0 ? 'Fail' : 'Success')+'</td> \
 					<td><span style="display:none">'+e.qtRaw+'</span><a data-toggle="modal" href="#myModal"><i class="glyphicon glyphicon-list-alt"></i></a></td> \
-					<td>'+e.sipPortMin+'</td> \
-					<td>'+e.sipPortMax+'</td> \
 					<td>'+sipResult+'</td> \
 					<td><span style="display:none">'+e.sipRaw+'</span><a data-toggle="modal" href="#myModal"><i class="glyphicon glyphicon-list-alt"></i></a></td> \
 					<td>'+e.rtpPortMin+'</td> \
