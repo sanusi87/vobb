@@ -447,7 +447,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 
 
 			// this is RTP
-			var rtpPortTestResult = false;
+			var rtpPortTestResult = true;
 			for(var i in data.rtpResult){
 				if( data.rtpResult[i].a.send && data.rtpResult[i].a.rcv && data.rtpResult[i].v.send && data.rtpResult[i].v.rcv ){
 					rtpPortTestResult = rtpPortTestResult && true;
@@ -478,6 +478,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 			var report = new vobb.report();
 			report.save( dbItem );
 			report.on('report_save_success', function(){
+				console.log('report saved.');
 				testingUser.splice( testingUser.indexOf( address.address ), 1 );
 
 				// and emit the counting event
