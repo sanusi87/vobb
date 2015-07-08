@@ -987,9 +987,9 @@ function showEndResult(){
 		rtpMaxPort = currRTPEnd;
 	}
 
-	var s = {};
-	s[settings['sip_min_port']] = siptest1;
-	s[settings['sip_max_port']] = siptest2;
+	var s = sipResult;
+	//s[settings['sip_min_port']] = siptest1;
+	//s[settings['sip_max_port']] = siptest2;
 
 	console.log('saving report...');
 	socket.emit('testFinished', {
