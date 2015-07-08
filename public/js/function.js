@@ -828,22 +828,6 @@ function nextFirewallTest(){
 
 		startMoveBgSky();
 		stopRptSky();
-
-		//--------------------------------------------------------------
-		var s = {};
-		s[settings['sip_min_port']] = siptest1;
-		s[settings['sip_max_port']] = siptest2;
-
-		socket.emit('testFinished', {
-			sipPortMin: settings['sip_min_port'],
-			sipPortMax: settings['sip_max_port'],
-			sipResult: s,
-			rtpPortMin: 0,
-			rtpPortMax: 0,
-			rtpResult: rtptest
-		});
-		//--------------------------------------------------------------
-
 	}else if( currFirewall == 1 ){
 		jQuery(".lvl-desc").html('');
 		moveFirewallBarIn();
@@ -993,6 +977,30 @@ function showEndResult(){
 
 		$(".ctnt-hdr.error.fail-result .mos-val").html(successResultClass);
 	};
+
+	//--------------------------------------------------------------
+	var rtpMinPort = 0,
+	rtpMaxPort = 0;
+
+	if( fulltest ){
+		rtpMinPort = currRTPStart;
+		rtpMaxPort = currRTPEnd;
+	}
+
+	var s = sipResult;
+	//s[settings['sip_min_port']] = siptest1;
+	//s[settings['sip_max_port']] = siptest2;
+
+	console.log('saving report...');
+	socket.emit('testFinished', {
+		sipPortMin: settings['sip_min_port'],
+		sipPortMax: settings['sip_max_port'],
+		sipResult: s,
+		rtpPortMin: rtpMinPort,
+		rtpPortMax: rtpMaxPort,
+		rtpResult: rtptest
+	});
+	//--------------------------------------------------------------
 
 	theResultSect.fadeIn(500);
 	theRocket.fadeOut(500);
@@ -1730,18 +1738,6 @@ function startCount( resp ){
 
 	}else{
 		console.log('olright');
-		var s = {};
-		s[settings['sip_min_port']] = siptest1;
-		s[settings['sip_max_port']] = siptest2;
-
-		socket.emit('testFinished', {
-			sipPortMin: settings['sip_min_port'],
-			sipPortMax: settings['sip_max_port'],
-			sipResult: s,
-			rtpPortMin: currRTPStart,
-			rtpPortMax: currRTPEnd,
-			rtpResult: rtptest
-		});
 
 		// terminate udp server one the test finished
 		socket.emit("terminate_udp_server", {

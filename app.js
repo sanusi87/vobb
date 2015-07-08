@@ -447,13 +447,16 @@ loadingCodec.on('codec_load_success', function(codecs){
 
 
 			// this is RTP
+			var rtpPortTestResult = true;
 			for(var i in data.rtpResult){
 				if( data.rtpResult[i].a.send && data.rtpResult[i].a.rcv && data.rtpResult[i].v.send && data.rtpResult[i].v.rcv ){
-
+					rtpPortTestResult = rtpPortTestResult && true;
 				}else{
 					totalRTPPortFail.push(i);
+					rtpPortTestResult = rtpPortTestResult && false;
 				}
 			}
+			dbItem.rtpPortTestResult = rtpPortTestResult;
 
 			dbItem.rtpPortMin = data.rtpPortMin;
 			dbItem.rtpPortMax = data.rtpPortMax;
@@ -463,11 +466,11 @@ loadingCodec.on('codec_load_success', function(codecs){
 				totalPortFail: totalRTPPortFail
 			});
 
-			if( data.rtpResult.length > 0 ){
-				dbItem.rtpPortTestResult = totalRTPPortFail.length > ( data.rtpResult.length / 2 ) ? 0 : 1;
-			}else{
-				dbItem.rtpPortTestResult = 0;
-			}
+			//if( data.rtpResult.length > 0 ){
+				//dbItem.rtpPortTestResult = totalRTPPortFail.length > ( data.rtpResult.length / 2 ) ? 0 : 1;
+			//}else{
+				//dbItem.rtpPortTestResult = 0;
+			//}
 
 			dbItem.testedOn = new Date();
 
@@ -475,12 +478,13 @@ loadingCodec.on('codec_load_success', function(codecs){
 			var report = new vobb.report();
 			report.save( dbItem );
 			report.on('report_save_success', function(){
+				console.log('report saved.');
 				testingUser.splice( testingUser.indexOf( address.address ), 1 );
 
 				// and emit the counting event
-				io.sockets.emit( 'userLimit', {
-					currentlyTestingUser: testingUser.length
-				});
+				// io.sockets.emit( 'userLimit', {
+					// currentlyTestingUser: testingUser.length
+				// });
 			}).on('report_save_error', function(err){
 				console.log(err);
 			});
@@ -724,7 +728,7 @@ loadingCodec.on('codec_load_success', function(codecs){
 
 			socket.emit("tcp_server_prepared", message);
 		});
-		
+
 		var spProc;
 		socket.on("send_tcp_packet", function(param){
 			var message = {};

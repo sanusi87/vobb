@@ -20,18 +20,30 @@ jQuery(function($){
 	*/
 	socket.on('loaded_report', function(data){
 		var newTr = '';
-		console.log(data);
+		//console.log(data);
 		if( data.length > 0 ){
 			$.each(data, function(i,e){
 				var testedOn = moment(e.on);
 				var sipRaw = JSON.parse(e.sipRaw),
 				sipResult;
 
-				if( sipRaw.result[5060] === true && sipRaw.result[5061] ){
-					sipResult = 'Success';
+				if( typeof( sipRaw.result[5060].a ) != 'undefined' ){
+					if( ( sipRaw.result[5060].a.send == true
+						&& sipRaw.result[5060].a.rcv == true
+						&& sipRaw.result[5060].v.send == true
+						&& sipRaw.result[5060].v.rcv == true ) && ( sipRaw.result[5061].a.send == true
+							&& sipRaw.result[5061].a.rcv == true
+							&& sipRaw.result[5061].v.send == true
+							&& sipRaw.result[5061].v.rcv == true ) ){
+
+						sipResult = 'Success';
+					}else{
+						sipResult = 'Fail';
+					}
 				}else{
-					sipResult = 'Fail';
+					sipResult = 'Unknown';
 				}
+
 
 				newTr += '<tr> \
 					<td>'+e.ind+'</td> \
@@ -40,8 +52,6 @@ jQuery(function($){
 					<td><span class="label label-success">Codec: '+e.codec+'</span>&nbsp;<span class="label label-success">No. of Lines: '+e.lines+'</span></td> \
 					<td>'+(e.qt == 0 ? 'Fail' : 'Success')+'</td> \
 					<td><span style="display:none">'+e.qtRaw+'</span><a data-toggle="modal" href="#myModal"><i class="glyphicon glyphicon-list-alt"></i></a></td> \
-					<td>'+e.sipPortMin+'</td> \
-					<td>'+e.sipPortMax+'</td> \
 					<td>'+sipResult+'</td> \
 					<td><span style="display:none">'+e.sipRaw+'</span><a data-toggle="modal" href="#myModal"><i class="glyphicon glyphicon-list-alt"></i></a></td> \
 					<td>'+e.rtpPortMin+'</td> \
@@ -109,10 +119,48 @@ jQuery(function($){
 			}
 
 			if( testResult.result ){
-				read += '<div class="row"><div class="col-md-4 col-sm-4 col-xs-4">SIP Result</div>\
-					<div class="col-md-4 col-sm-4 col-xs-4"><div>5060: '+testResult.result[5060]+'</div></div>\
-					<div class="col-md-4 col-sm-4 col-xs-4"><div>5061: '+testResult.result[5061]+'</div></div>\
+				var test5060 = testResult.result[5060],
+				test5061 = testResult.result[5061];
+				if( typeof( test5060.a ) != 'undefined' ){
+
+					read += '<div class="row">\
+						<div class="col-md-4 col-sm-4 col-xs-12"><strong>Port Number</strong></div>\
+						<div class="col-md-8 col-sm-8 col-xs-12">\
+							<div class="row">\
+								<div class="col-md-6 col-sm-6 col-xs-6 text-center"><strong>Applet</strong></div>\
+								<div class="col-md-6 col-sm-6 col-xs-6 text-center"><strong>VoBB</strong></div>\
+							</div>\
+							<div class="row">\
+								<div class="col-md-3 col-sm-3 col-xs-3"><i class="glyphicon glyphicon-log-out"></i> Send</div>\
+								<div class="col-md-3 col-sm-3 col-xs-3"><i class="glyphicon glyphicon-log-in"></i> Receive</div>\
+								<div class="col-md-3 col-sm-3 col-xs-3"><i class="glyphicon glyphicon-log-out"></i> Send</div>\
+								<div class="col-md-3 col-sm-3 col-xs-3"><i class="glyphicon glyphicon-log-in"></i> Receive</div>\
+							</div>\
+						</div>\
+					</div><hr class="s1" />';
+
+					read += '<div class="row">\
+						<div class="col-md-4 col-sm-4 col-xs-12">5060</div>\
+						<div class="col-md-8 col-sm-8 col-xs-12">\
+							<div class="row">\
+								<div class="col-md-3 col-sm-3 col-xs-3">'+test5060.a.send+'</div>\
+								<div class="col-md-3 col-sm-3 col-xs-3">'+test5060.a.rcv+'</div>\
+								<div class="col-md-3 col-sm-3 col-xs-3">'+test5060.v.send+'</div>\
+								<div class="col-md-3 col-sm-3 col-xs-3">'+test5060.v.rcv+'</div>\
+							</div>\
+						</div>\
+					</div><div class="row">\
+						<div class="col-md-4 col-sm-4 col-xs-12">5061</div>\
+						<div class="col-md-8 col-sm-8 col-xs-12">\
+							<div class="row">\
+								<div class="col-md-3 col-sm-3 col-xs-3">'+test5061.a.send+'</div>\
+								<div class="col-md-3 col-sm-3 col-xs-3">'+test5061.a.rcv+'</div>\
+								<div class="col-md-3 col-sm-3 col-xs-3">'+test5061.v.send+'</div>\
+								<div class="col-md-3 col-sm-3 col-xs-3">'+test5061.v.rcv+'</div>\
+							</div>\
+						</div>\
 					</div>';
+				}
 			}
 		}
 
@@ -151,8 +199,6 @@ jQuery(function($){
 			</div><hr class="s1" />';
 
 			$.each(testResult.result, function(i,e){
-				console.log(i);
-				console.log(e);
 				read += '<div class="row'+(i%2==0?' bg-info':'')+'">\
 					<div class="col-md-4 col-sm-4 col-xs-12">'+i+'</div>\
 					<div class="col-md-8 col-sm-8 col-xs-12">\
