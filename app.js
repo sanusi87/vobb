@@ -48,14 +48,14 @@ app.use('/settings', settings);
 app.use('/subscribe_click', subscribe);
 app.use('/test_applet', testapplet);
 
-/// catch 404 and forwarding to error handler
+// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');
 	err.status = 404;
 	next(err);
 });
 
-/// error handlers
+// error handlers
 
 // development error handler, will print stacktrace
 if (app.get('env') === 'development') {
